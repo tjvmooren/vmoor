@@ -102,7 +102,36 @@
         </table>
       </div>
     </div>
+            <!-- Matchups -->
+        <div class="card" style="margin-top:16px;">
+          <div class="row" style="justify-content:space-between; align-items:center;">
+            <div>
+              <div class="muted small">Matchups</div>
+              <div class="small muted" id="matchupsNote">Select a week to view matchups.</div>
+            </div>
 
+            <div class="row">
+              <label class="pill mono" for="weekSelect">week</label>
+              <select id="weekSelect" class="btn" style="padding:10px 12px;">
+                <!-- filled by JS -->
+              </select>
+              <button class="btn" id="loadWeekBtn" type="button">Load</button>
+            </div>
+          </div>
+
+          <table id="matchupsTable" aria-label="Weekly matchups" style="margin-top:12px;">
+            <thead>
+              <tr>
+                <th style="width:90px;">Matchup</th>
+                <th>Team A</th>
+                <th class="num" style="width:90px;">Pts</th>
+                <th>Team B</th>
+                <th class="num" style="width:90px;">Pts</th>
+              </tr>
+            </thead>
+            <tbody id="matchupsBody"></tbody>
+          </table>
+        </div>
     <footer>
       <div>Data via Sleeper public API</div>
       <div class="mono" id="apiInfo"></div>
