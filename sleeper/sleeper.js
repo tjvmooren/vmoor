@@ -1,86 +1,126 @@
 (() => {
+  /* =========================================================================
+   * Sleeper Dashboard (vmoor)
+   * - Reads config from window.VMOOR (set in HTML)
+   * - Fetches league / rosters / users
+   * - Renders standings, matchups by week, and playoff brackets
+   * - Uses sessionStorage caching to reduce API calls
+   * ========================================================================= */
+
+  // ---------------------------
+  // Config
+  // ---------------------------
   const cfg = window.VMOOR || {};
   const leagueId = cfg.leagueId;
 
+  const API_BASE = "https://api.sleeper.app/v1";
+
+  // ---------------------------
+  // DOM elements (all IDs from your HTML)
+  // Naming convention: *El suffix for DOM nodes*
+  // ---------------------------
   const els = {
-    leagueName: document.getElementById("leagueName"),
-    leagueMeta: document.getElementById("leagueMeta"),
-    openSleeper: document.getElementById("openSleeper"),
-    refreshBtn: document.getElementById("refreshBtn"),
-    buildInfo: document.getElementById("buildInfo"),
-    apiInfo: document.getElementById("apiInfo"),
+    // Header / meta
+    leagueNameEl: document.getElementById("leagueName"),
+    leagueMetaEl: document.getElementById("leagueMeta"),
+    openSleeperEl: document.getElementById("openSleeper"),
+    refreshBtnEl: document.getElementById("refreshBtn"),
+    buildInfoEl: document.getElementById("buildInfo"),
+    apiInfoEl: document.getElementById("apiInfo"),
 
-    loadingRow: document.getElementById("loadingRow"),
-    errorRow: document.getElementById("errorRow"),
-    content: document.getElementById("content"),
+    // Standings card states
+    loadingRowEl: document.getElementById("loadingRow"),
+    errorRowEl: document.getElementById("errorRow"),
+    contentEl: document.getElementById("content"),
 
-    standingsBody: document.getElementById("standingsBody"),
-    standingsNote: document.getElementById("standingsNote"),
-    lastUpdated: document.getElementById("lastUpdated"),
+    // Standings table
+    standingsBodyEl: document.getElementById("standingsBody"),
+    standingsNoteEl: document.getElementById("standingsNote"),
+    lastUpdatedEl: document.getElementById("lastUpdated"),
 
-    weekSelect: document.getElementById("weekSelect"),
-    loadWeekBtn: document.getElementById("loadWeekBtn"),
-    matchupsBody: document.getElementById("matchupsBody"),
-    matchupsNote: document.getElementById("matchupsNote"),
+    // Matchups
+    weekSelectEl: document.getElementById("weekSelect"),
+    loadWeekBtnEl: document.getElementById("loadWeekBtn"),
+    matchupsBodyEl: document.getElementById("matchupsBody"),
+    matchupsNoteEl: document.getElementById("matchupsNote"),
 
-    btnWinners: document.getElementById("btnWinners"),
-    btnLosers: document.getElementById("btnLosers"),
-    playoffsBody: document.getElementById("playoffsBody"),
-    playoffsNote: document.getElementById("playoffsNote"),
+    // Playoffs
+    btnWinnersEl: document.getElementById("btnWinners"),
+    btnLosersEl: document.getElementById("btnLosers"),
+    playoffsBodyEl: document.getElementById("playoffsBody"),
+    playoffsNoteEl: document.getElementById("playoffsNote"),
   };
 
-  const API = "https://api.sleeper.app/v1";
-  if (els.apiInfo) els.apiInfo.textContent = `api: ${API}`;
-  if (els.buildInfo) els.buildInfo.textContent = `build: ${new Date().toISOString().slice(0, 10)}`;
+  // Cosmetic info
+  if (els.apiInfoEl) els.apiInfoEl.textContent = `api: ${API_BASE}`;
+  if (els.buildInfoEl) els.buildInfoEl.textContent = `build: ${new Date().toISOString().slice(0, 10)}`;
 
-  // Cache: league+rosters+users
-  const CACHE_KEY = `vmoor_sleeper_${leagueId}`;
-  const CACHE_TTL_MS = 2 * 60 * 1000;
+  // ---------------------------
+  // Caching (sessionStorage)
+  // ---------------------------
+  // League payload cache: league + rosters + users
+  const LEAGUE_CACHE_KEY = `vmoor_sleeper_${leagueId}`;
+  const LEAGUE_CACHE_TTL_MS = 2 * 60 * 1000;
 
-  // Cache: matchups per week
-  const MU_KEY = (w) => `vmoor_matchups_${leagueId}_${w}`;
-  const MU_TTL_MS = 60 * 1000;
+  // Matchups cache per week
+  const matchupCacheKey = (week) => `vmoor_matchups_${leagueId}_${week}`;
+  const MATCHUPS_CACHE_TTL_MS = 60 * 1000;
 
-  // Cache: playoffs
-  const PO_KEY = (type) => `vmoor_playoffs_${leagueId}_${type}`;
-  const PO_TTL_MS = 5 * 60 * 1000;
+  // Playoffs cache (winners/losers)
+  const playoffsCacheKey = (type) => `vmoor_playoffs_${leagueId}_${type}`;
+  const PLAYOFFS_CACHE_TTL_MS = 5 * 60 * 1000;
 
-  // runtime maps
-  let usersById = new Map();
-  let rosterIdToTeam = new Map();
+  // ---------------------------
+  // Runtime maps (filled in hydrate())
+  // ---------------------------
+  let usersById = new Map();        // user_id -> user object
+  let rosterIdToTeamName = new Map(); // roster_id -> display team name
 
-  function showError(msg) {
-    if (els.loadingRow) els.loadingRow.style.display = "none";
-    if (els.content) els.content.style.display = "none";
-    if (els.errorRow) {
-      els.errorRow.style.display = "block";
-      els.errorRow.textContent = msg;
+  // =========================================================================
+  // UI helpers
+  // =========================================================================
+  function showError(message) {
+    if (els.loadingRowEl) els.loadingRowEl.style.display = "none";
+    if (els.contentEl) els.contentEl.style.display = "none";
+
+    if (els.errorRowEl) {
+      els.errorRowEl.style.display = "block";
+      els.errorRowEl.textContent = message;
     }
   }
 
   function showContent() {
-    if (els.loadingRow) els.loadingRow.style.display = "none";
-    if (els.errorRow) els.errorRow.style.display = "none";
-    if (els.content) els.content.style.display = "block";
+    if (els.loadingRowEl) els.loadingRowEl.style.display = "none";
+    if (els.errorRowEl) els.errorRowEl.style.display = "none";
+    if (els.contentEl) els.contentEl.style.display = "block";
   }
 
+  // =========================================================================
+  // Network helpers
+  // =========================================================================
   async function fetchJson(url) {
     const res = await fetch(url, { headers: { Accept: "application/json" } });
     if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
     return res.json();
   }
 
+  // =========================================================================
+  // Formatting helpers
+  // =========================================================================
   function toPoints(settings, keyBase) {
+    // Sleeper often stores points as whole + decimal (hundredths)
     const whole = Number(settings?.[keyBase] ?? 0);
     const dec = Number(settings?.[`${keyBase}_decimal`] ?? 0);
     return whole + dec / 100;
   }
 
-  function fmt(n) {
+  function fmt2(n) {
+    // Always show 2 decimals
     return (Math.round(Number(n) * 100) / 100).toFixed(2);
   }
 
   function escapeHtml(str) {
+    // Prevent HTML injection when inserting user/team strings into innerHTML
     return String(str)
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
@@ -89,12 +129,18 @@
       .replaceAll("'", "&#039;");
   }
 
+  // =========================================================================
+  // Cache helpers
+  // =========================================================================
   function readCache(key, ttlMs) {
     try {
       const raw = sessionStorage.getItem(key);
       if (!raw) return null;
+
       const data = JSON.parse(raw);
-      if (!data?.ts || (Date.now() - data.ts) > ttlMs) return null;
+      const isExpired = !data?.ts || (Date.now() - data.ts) > ttlMs;
+      if (isExpired) return null;
+
       return data.payload;
     } catch {
       return null;
@@ -105,162 +151,202 @@
     try {
       sessionStorage.setItem(key, JSON.stringify({ ts: Date.now(), payload }));
     } catch {
-      // ignore
+      // If storage fails (quota, privacy mode), just skip caching.
     }
   }
 
+  // =========================================================================
+  // Data helpers
+  // =========================================================================
   function teamNameFromUser(user) {
+    // Prefer custom team name if user set it in metadata
     if (!user) return "Unknown";
-    const metaTeam = user?.metadata?.team_name;
-    return metaTeam && String(metaTeam).trim().length > 0
-      ? metaTeam
-      : (user.display_name || user.username || "Team");
+
+    const metaTeamName = user?.metadata?.team_name;
+    if (metaTeamName && String(metaTeamName).trim().length > 0) return metaTeamName;
+
+    return user.display_name || user.username || "Team";
   }
 
+  // =========================================================================
+  // Standings
+  // =========================================================================
   function buildStandings(rosters) {
-    const rows = (rosters || []).map((r) => {
-      const settings = r.settings || {};
+    const rows = (rosters || []).map((roster) => {
+      const settings = roster.settings || {};
+
       const wins = Number(settings.wins ?? 0);
       const losses = Number(settings.losses ?? 0);
       const ties = Number(settings.ties ?? 0);
 
-      const pf = toPoints(settings, "fpts");
-      const pa = toPoints(settings, "fpts_against"); // may be missing → 0
-      const diff = pf - pa;
+      const pointsFor = toPoints(settings, "fpts");
+      const pointsAgainst = toPoints(settings, "fpts_against"); // may be missing -> 0
+      const diff = pointsFor - pointsAgainst;
 
-      const user = usersById.get(r.owner_id);
+      const user = usersById.get(roster.owner_id);
       const team = teamNameFromUser(user);
 
-      return { team, rosterId: r.roster_id, w: wins, l: losses, t: ties, pf, pa, diff };
+      return {
+        team,
+        rosterId: roster.roster_id,
+        w: wins,
+        l: losses,
+        t: ties,
+        pf: pointsFor,
+        pa: pointsAgainst,
+        diff,
+      };
     });
 
-    rows.sort((a, b) => {
-      if (b.w !== a.w) return b.w - a.w;
-      if (b.t !== a.t) return b.t - a.t;
-      if (b.pf !== a.pf) return b.pf - a.pf;
-      if (a.pa !== b.pa) return a.pa - b.pa;
-      return a.team.localeCompare(b.team);
+    // Sort rules (your original logic)
+    rows.sort((left, right) => {
+      if (right.w !== left.w) return right.w - left.w;
+      if (right.t !== left.t) return right.t - left.t;
+      if (right.pf !== left.pf) return right.pf - left.pf;
+      if (left.pa !== right.pa) return left.pa - right.pa;
+      return left.team.localeCompare(right.team);
     });
 
-    return rows.map((r, i) => ({ rank: i + 1, ...r }));
+    return rows.map((row, index) => ({ rank: index + 1, ...row }));
   }
 
   function renderStandings(standings) {
-    if (!els.standingsBody) return;
-    els.standingsBody.innerHTML = "";
+    if (!els.standingsBodyEl) return;
 
-    for (const s of standings) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${s.rank}</td>
-        <td>${escapeHtml(s.team)}</td>
-        <td class="num">${s.w}-${s.l}-${s.t}</td>
-        <td class="num">${fmt(s.pf)}</td>
-        <td class="num">${fmt(s.pa)}</td>
-        <td class="num">${(s.diff >= 0 ? "+" : "") + fmt(s.diff)}</td>
+    els.standingsBodyEl.innerHTML = "";
+
+    for (const entry of standings) {
+      const rowEl = document.createElement("tr");
+
+      rowEl.innerHTML = `
+        <td>${entry.rank}</td>
+        <td>${escapeHtml(entry.team)}</td>
+        <td class="num">${entry.w}-${entry.l}-${entry.t}</td>
+        <td class="num">${fmt2(entry.pf)}</td>
+        <td class="num">${fmt2(entry.pa)}</td>
+        <td class="num">${(entry.diff >= 0 ? "+" : "") + fmt2(entry.diff)}</td>
       `;
-      els.standingsBody.appendChild(tr);
+
+      els.standingsBodyEl.appendChild(rowEl);
     }
   }
 
   function regularSeasonWeeksFromLeague(league) {
-    const pws = Number(league?.settings?.playoff_week_start ?? 0);
-    if (pws && pws > 1) return pws - 1;
-    return 14; // fallback
+    // If playoff week start is known, regular season ends the week before.
+    const playoffWeekStart = Number(league?.settings?.playoff_week_start ?? 0);
+    if (playoffWeekStart && playoffWeekStart > 1) return playoffWeekStart - 1;
+
+    // fallback if Sleeper data is missing
+    return 14;
   }
 
   function fillWeekSelect(regularSeasonWeeks) {
-    if (!els.weekSelect) return;
-    els.weekSelect.innerHTML = "";
-    for (let w = 1; w <= regularSeasonWeeks; w++) {
+    if (!els.weekSelectEl) return;
+
+    els.weekSelectEl.innerHTML = "";
+
+    for (let week = 1; week <= regularSeasonWeeks; week++) {
       const opt = document.createElement("option");
-      opt.value = String(w);
-      opt.textContent = `Week ${w}`;
-      els.weekSelect.appendChild(opt);
+      opt.value = String(week);
+      opt.textContent = `Week ${week}`;
+      els.weekSelectEl.appendChild(opt);
     }
-    els.weekSelect.value = "1";
+
+    // default selection
+    els.weekSelectEl.value = "1";
   }
 
-  // ---------------------------
+  // =========================================================================
   // Matchups
-  // ---------------------------
+  // =========================================================================
   async function loadWeekMatchups(week, { bypassCache = false } = {}) {
-    if (!week || !els.matchupsBody || !els.matchupsNote) return;
-    const w = Number(week);
+    if (!week || !els.matchupsBodyEl || !els.matchupsNoteEl) return;
 
-    els.matchupsNote.textContent = `Loading week ${w}…`;
-    els.matchupsBody.innerHTML = "";
+    const weekNum = Number(week);
+    els.matchupsNoteEl.textContent = `Loading week ${weekNum}…`;
+    els.matchupsBodyEl.innerHTML = "";
 
     if (!bypassCache) {
-      const cached = readCache(MU_KEY(w), MU_TTL_MS);
+      const cached = readCache(matchupCacheKey(weekNum), MATCHUPS_CACHE_TTL_MS);
       if (cached) {
-        renderMatchups(cached, w, { cached: true });
+        renderMatchups(cached, weekNum, { cached: true });
         return;
       }
     }
 
     try {
-      const matchups = await fetchJson(`${API}/league/${leagueId}/matchups/${w}`);
-      writeCache(MU_KEY(w), matchups);
-      renderMatchups(matchups, w, { cached: false });
-    } catch (e) {
-      els.matchupsNote.textContent = `Failed to load week ${w}: ${e?.message || e}`;
+      const matchups = await fetchJson(`${API_BASE}/league/${leagueId}/matchups/${weekNum}`);
+      writeCache(matchupCacheKey(weekNum), matchups);
+      renderMatchups(matchups, weekNum, { cached: false });
+    } catch (err) {
+      els.matchupsNoteEl.textContent = `Failed to load week ${weekNum}: ${err?.message || err}`;
     }
   }
 
   function renderMatchups(matchups, week, { cached }) {
-    const groups = new Map();
-    for (const m of (matchups || [])) {
-      const id = m.matchup_id ?? "bye";
-      if (!groups.has(id)) groups.set(id, []);
-      groups.get(id).push(m);
+    // Group each roster's matchup entry by matchup_id
+    const matchupsById = new Map();
+
+    for (const matchup of (matchups || [])) {
+      const matchupId = matchup.matchup_id ?? "bye";
+      if (!matchupsById.has(matchupId)) matchupsById.set(matchupId, []);
+      matchupsById.get(matchupId).push(matchup);
     }
 
-    const matchupIds = Array.from(groups.keys()).sort((a, b) => {
+    // Sort matchup IDs so table order is stable
+    const matchupIds = Array.from(matchupsById.keys()).sort((a, b) => {
       const na = Number(a), nb = Number(b);
       if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
       return String(a).localeCompare(String(b));
     });
 
-    els.matchupsBody.innerHTML = "";
+    els.matchupsBodyEl.innerHTML = "";
 
-    for (const mid of matchupIds) {
-      const pair = groups.get(mid) || [];
-      const a = pair[0];
-      const b = pair[1];
+    for (const matchupId of matchupIds) {
+      const pair = matchupsById.get(matchupId) || [];
 
-      const aName = rosterIdToTeam.get(a?.roster_id) || `Roster ${a?.roster_id ?? "?"}`;
-      const bName = b ? (rosterIdToTeam.get(b.roster_id) || `Roster ${b.roster_id}`) : "BYE";
+      // These were your a/b variables — renamed for clarity
+      const matchupA = pair[0];
+      const matchupB = pair[1];
 
-      const aPts = Number(a?.points ?? 0);
-      const bPts = Number(b?.points ?? 0);
+      const teamAName =
+        rosterIdToTeamName.get(matchupA?.roster_id) || `Roster ${matchupA?.roster_id ?? "?"}`;
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="mono">${escapeHtml(mid)}</td>
-        <td>${escapeHtml(aName)}</td>
-        <td class="num">${fmt(aPts)}</td>
-        <td>${escapeHtml(bName)}</td>
-        <td class="num">${b ? fmt(bPts) : ""}</td>
+      const teamBName = matchupB
+        ? (rosterIdToTeamName.get(matchupB.roster_id) || `Roster ${matchupB.roster_id}`)
+        : "BYE";
+
+      const teamAPoints = Number(matchupA?.points ?? 0);
+      const teamBPoints = Number(matchupB?.points ?? 0);
+
+      const rowEl = document.createElement("tr");
+      rowEl.innerHTML = `
+        <td class="mono">${escapeHtml(matchupId)}</td>
+        <td>${escapeHtml(teamAName)}</td>
+        <td class="num">${fmt2(teamAPoints)}</td>
+        <td>${escapeHtml(teamBName)}</td>
+        <td class="num">${matchupB ? fmt2(teamBPoints) : ""}</td>
       `;
-      els.matchupsBody.appendChild(tr);
+
+      els.matchupsBodyEl.appendChild(rowEl);
     }
 
-    els.matchupsNote.textContent = `Week ${week} matchups (${cached ? "cached" : "live"})`;
+    els.matchupsNoteEl.textContent = `Week ${week} matchups (${cached ? "cached" : "live"})`;
   }
 
-  // ---------------------------
+  // =========================================================================
   // Playoffs
-  // ---------------------------
+  // =========================================================================
   async function loadPlayoffs(type = "winners", { bypassCache = false } = {}) {
-    if (!els.playoffsBody || !els.playoffsNote) return;
+    if (!els.playoffsBodyEl || !els.playoffsNoteEl) return;
 
     const endpoint = type === "losers" ? "losers_bracket" : "winners_bracket";
-    els.playoffsNote.textContent = `Loading ${type} bracket…`;
-    els.playoffsBody.innerHTML = "";
+
+    els.playoffsNoteEl.textContent = `Loading ${type} bracket…`;
+    els.playoffsBodyEl.innerHTML = "";
 
     if (!bypassCache) {
-      const cached = readCache(PO_KEY(type), PO_TTL_MS);
+      const cached = readCache(playoffsCacheKey(type), PLAYOFFS_CACHE_TTL_MS);
       if (cached) {
         renderPlayoffs(cached, type, { cached: true });
         return;
@@ -268,146 +354,192 @@
     }
 
     try {
-      const data = await fetchJson(`${API}/league/${leagueId}/${endpoint}`);
-      writeCache(PO_KEY(type), data);
+      const data = await fetchJson(`${API_BASE}/league/${leagueId}/${endpoint}`);
+      writeCache(playoffsCacheKey(type), data);
       renderPlayoffs(data, type, { cached: false });
-    } catch (e) {
-      els.playoffsNote.textContent = `Failed to load ${type} bracket: ${e?.message || e}`;
+    } catch (err) {
+      els.playoffsNoteEl.textContent = `Failed to load ${type} bracket: ${err?.message || err}`;
     }
   }
 
   function renderPlayoffs(bracket, type, { cached }) {
-    const list = Array.isArray(bracket) ? bracket : [];
+    const games = Array.isArray(bracket) ? bracket : [];
 
-    if (list.length === 0) {
-      els.playoffsNote.textContent = `${type} bracket not available yet (or playoffs haven’t started).`;
+    if (games.length === 0) {
+      els.playoffsNoteEl.textContent =
+        `${type} bracket not available yet (or playoffs haven’t started).`;
       return;
     }
 
-    const getTeam = (rosterId) =>
-      rosterId ? (rosterIdToTeam.get(rosterId) || `Roster ${rosterId}`) : "TBD";
-    const getWinner = (w) => (w ? (rosterIdToTeam.get(w) || `Roster ${w}`) : "TBD");
+    const teamLabel = (rosterId) =>
+      rosterId ? (rosterIdToTeamName.get(rosterId) || `Roster ${rosterId}`) : "TBD";
 
-    const sorted = [...list].sort((a, b) => {
-      const ra = Number(a?.r ?? 0), rb = Number(b?.r ?? 0);
-      if (ra !== rb) return ra - rb;
-      const ma = Number(a?.m ?? 0), mb = Number(b?.m ?? 0);
-      return ma - mb;
+    const winnerLabel = (winnerRosterId) =>
+      winnerRosterId ? (rosterIdToTeamName.get(winnerRosterId) || `Roster ${winnerRosterId}`) : "TBD";
+
+    // Sort by round then game number
+    const sortedGames = [...games].sort((a, b) => {
+      const roundA = Number(a?.r ?? 0);
+      const roundB = Number(b?.r ?? 0);
+      if (roundA !== roundB) return roundA - roundB;
+
+      const matchA = Number(a?.m ?? 0);
+      const matchB = Number(b?.m ?? 0);
+      return matchA - matchB;
     });
 
-    els.playoffsBody.innerHTML = "";
-    for (const g of sorted) {
-      const round = g?.r ?? "";
-      const game = g?.m ?? "";
+    els.playoffsBodyEl.innerHTML = "";
+
+    for (const game of sortedGames) {
+      const round = game?.r ?? "";
+      const gameNum = game?.m ?? "";
 
       // Sleeper bracket fields commonly use t1/t2 and winner w
-      const t1 = g?.t1 ?? g?.team1 ?? g?.roster_id_1;
-      const t2 = g?.t2 ?? g?.team2 ?? g?.roster_id_2;
-      const winner = g?.w ?? g?.winner;
+      const team1 = game?.t1 ?? game?.team1 ?? game?.roster_id_1;
+      const team2 = game?.t2 ?? game?.team2 ?? game?.roster_id_2;
+      const winner = game?.w ?? game?.winner;
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
+      const rowEl = document.createElement("tr");
+      rowEl.innerHTML = `
         <td class="mono">${escapeHtml(round)}</td>
-        <td class="mono">${escapeHtml(game)}</td>
-        <td>${escapeHtml(getTeam(t1))}</td>
-        <td>${escapeHtml(getTeam(t2))}</td>
-        <td>${escapeHtml(getWinner(winner))}</td>
+        <td class="mono">${escapeHtml(gameNum)}</td>
+        <td>${escapeHtml(teamLabel(team1))}</td>
+        <td>${escapeHtml(teamLabel(team2))}</td>
+        <td>${escapeHtml(winnerLabel(winner))}</td>
       `;
-      els.playoffsBody.appendChild(tr);
+
+      els.playoffsBodyEl.appendChild(rowEl);
     }
 
-    els.playoffsNote.textContent = `${type} bracket (${cached ? "cached" : "live"})`;
+    els.playoffsNoteEl.textContent = `${type} bracket (${cached ? "cached" : "live"})`;
   }
 
-  // ---------------------------
-  // Main load
-  // ---------------------------
+  // =========================================================================
+  // Main load (league + rosters + users)
+  // =========================================================================
   async function load({ bypassCache = false } = {}) {
     if (!leagueId) return showError("Missing leagueId config.");
 
-    if (els.loadingRow) els.loadingRow.style.display = "flex";
-    if (els.errorRow) els.errorRow.style.display = "none";
-    if (els.content) els.content.style.display = "none";
+    // Reset UI to loading state
+    if (els.loadingRowEl) els.loadingRowEl.style.display = "flex";
+    if (els.errorRowEl) els.errorRowEl.style.display = "none";
+    if (els.contentEl) els.contentEl.style.display = "none";
 
+    // Use cached league payload if available
     if (!bypassCache) {
-      const cached = readCache(CACHE_KEY, CACHE_TTL_MS);
-      if (cached) {
-        hydrate(cached, { cached: true });
+      const cachedPayload = readCache(LEAGUE_CACHE_KEY, LEAGUE_CACHE_TTL_MS);
+      if (cachedPayload) {
+        hydrate(cachedPayload, { cached: true });
         return;
       }
     }
 
     try {
       const [league, rosters, users] = await Promise.all([
-        fetchJson(`${API}/league/${leagueId}`),
-        fetchJson(`${API}/league/${leagueId}/rosters`),
-        fetchJson(`${API}/league/${leagueId}/users`),
+        fetchJson(`${API_BASE}/league/${leagueId}`),
+        fetchJson(`${API_BASE}/league/${leagueId}/rosters`),
+        fetchJson(`${API_BASE}/league/${leagueId}/users`),
       ]);
 
       const payload = { league, rosters, users };
-      writeCache(CACHE_KEY, payload);
+      writeCache(LEAGUE_CACHE_KEY, payload);
       hydrate(payload, { cached: false });
-    } catch (e) {
-      showError(`Failed to load Sleeper data: ${e?.message || e}`);
+    } catch (err) {
+      showError(`Failed to load Sleeper data: ${err?.message || err}`);
     }
   }
 
   function hydrate(payload, { cached }) {
     const { league, rosters, users } = payload;
 
-    // Users map
+    // Build users map (user_id -> user)
     usersById = new Map();
-    for (const u of (users || [])) if (u?.user_id) usersById.set(u.user_id, u);
+    for (const user of (users || [])) {
+      if (user?.user_id) usersById.set(user.user_id, user);
+    }
 
-    // rosterId → team name
-    rosterIdToTeam = new Map();
-    for (const r of (rosters || [])) {
-      const user = usersById.get(r.owner_id);
-      rosterIdToTeam.set(r.roster_id, teamNameFromUser(user));
+    // Build rosterId -> team name map
+    rosterIdToTeamName = new Map();
+    for (const roster of (rosters || [])) {
+      const owner = usersById.get(roster.owner_id);
+      rosterIdToTeamName.set(roster.roster_id, teamNameFromUser(owner));
     }
 
     // Header
-    if (els.leagueName) els.leagueName.textContent = league?.name || "Sleeper Dashboard";
+    if (els.leagueNameEl) els.leagueNameEl.textContent = league?.name || "Sleeper Dashboard";
+
     const season = league?.season ?? cfg.season ?? "";
     const teams = league?.total_rosters ?? rosters?.length ?? "";
-    if (els.leagueMeta) {
-      els.leagueMeta.textContent = [
+
+    if (els.leagueMetaEl) {
+      els.leagueMetaEl.textContent = [
         season ? `Season: ${season}` : null,
         teams ? `Teams: ${teams}` : null,
         `Type: ${cfg.leagueType || "league"}`,
       ].filter(Boolean).join(" • ");
     }
 
-    if (els.openSleeper) els.openSleeper.href = `https://sleeper.com/leagues/${leagueId}`;
+    // "Open in Sleeper" link
+    if (els.openSleeperEl) els.openSleeperEl.href = `https://sleeper.com/leagues/${leagueId}`;
 
     // Standings
     const standings = buildStandings(rosters || []);
     renderStandings(standings);
-    if (els.standingsNote) els.standingsNote.textContent = "Sorted by wins, ties, PF, then PA.";
 
-    if (els.lastUpdated) {
-      const now = new Date();
-      els.lastUpdated.textContent = `${cached ? "cached" : "live"} • ${now.toLocaleString()}`;
+    if (els.standingsNoteEl) {
+      els.standingsNoteEl.textContent = "Sorted by wins, ties, PF, then PA.";
     }
 
-    // Week selector
-    const regWeeks = regularSeasonWeeksFromLeague(league);
-    fillWeekSelect(regWeeks);
+    // Last updated pill
+    if (els.lastUpdatedEl) {
+      const now = new Date();
+      els.lastUpdatedEl.textContent = `${cached ? "cached" : "live"} • ${now.toLocaleString()}`;
+    }
+
+    // Week dropdown
+    const regularSeasonWeeks = regularSeasonWeeksFromLeague(league);
+    fillWeekSelect(regularSeasonWeeks);
 
     showContent();
 
-    // Defaults
-    if (els.weekSelect) loadWeekMatchups(els.weekSelect.value);
+    // Defaults on load
+    if (els.weekSelectEl) loadWeekMatchups(els.weekSelectEl.value);
     loadPlayoffs("winners");
   }
 
-  // Wire up events
-  if (els.refreshBtn) els.refreshBtn.addEventListener("click", () => load({ bypassCache: true }));
-  if (els.loadWeekBtn) els.loadWeekBtn.addEventListener("click", () => loadWeekMatchups(els.weekSelect?.value, { bypassCache: true }));
-  if (els.weekSelect) els.weekSelect.addEventListener("change", () => loadWeekMatchups(els.weekSelect.value));
-  if (els.btnWinners) els.btnWinners.addEventListener("click", () => loadPlayoffs("winners", { bypassCache: true }));
-  if (els.btnLosers) els.btnLosers.addEventListener("click", () => loadPlayoffs("losers", { bypassCache: true }));
+  // =========================================================================
+  // Event wiring
+  // =========================================================================
+  if (els.refreshBtnEl) {
+    els.refreshBtnEl.addEventListener("click", () => load({ bypassCache: true }));
+  }
 
-  // Go
+  if (els.loadWeekBtnEl) {
+    els.loadWeekBtnEl.addEventListener("click", () =>
+      loadWeekMatchups(els.weekSelectEl?.value, { bypassCache: true })
+    );
+  }
+
+  if (els.weekSelectEl) {
+    els.weekSelectEl.addEventListener("change", () =>
+      loadWeekMatchups(els.weekSelectEl.value)
+    );
+  }
+
+  if (els.btnWinnersEl) {
+    els.btnWinnersEl.addEventListener("click", () =>
+      loadPlayoffs("winners", { bypassCache: true })
+    );
+  }
+
+  if (els.btnLosersEl) {
+    els.btnLosersEl.addEventListener("click", () =>
+      loadPlayoffs("losers", { bypassCache: true })
+    );
+  }
+
+  // =========================================================================
+  // Go time
+  // =========================================================================
   load();
 })();

@@ -1,178 +1,384 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- ==========================================
+       Basic document metadata
+       ========================================== -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sleeper • vmoor</title>
+
+  <title>Sleeper - vmoor</title>
   <meta name="description" content="Sleeper league dashboard for vmoor.com" />
+
+  <!-- ==========================================
+       Page styles
+       - Uses CSS variables for theme colors
+       - Small utility classes for layout + typography
+       ========================================== -->
   <style>
-    :root{
-      --bg:#0b0d12; --fg:#e8ebf2; --muted:#a8b0c2;
-      --card:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
-      --link:#8ab4ff; --ok:#aaffd6; --warn:#ffd38a;
+    /* ---------- Theme (easy to tweak in one place) ---------- */
+    :root {
+      --bg: #0b0d12;
+      --fg: #e8ebf2;
+      --muted: #a8b0c2;
+
+      --card: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.12);
+
+      --link: #8ab4ff;
+      --ok: #aaffd6;
+      --warn: #ffd38a;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:radial-gradient(1000px 500px at 20% 0%,rgba(138,180,255,.18),transparent 50%),var(--bg);
-      color:var(--fg); min-height:100vh;
+
+    /* ---------- Global reset-ish ---------- */
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--fg);
+
+      /* subtle accent glow + dark background */
+      background:
+        radial-gradient(
+          1000px 500px at 20% 0%,
+          rgba(138, 180, 255, 0.18),
+          transparent 50%
+        ),
+        var(--bg);
     }
-    a{color:var(--link); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .wrap{max-width:1100px;margin:auto;padding:56px 20px}
-    .mono{font-family:ui-monospace,Consolas,monospace}
-    .top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    h1{margin:14px 0 6px;font-size:clamp(28px,4vw,42px)}
-    .muted{color:var(--muted)}
-    .card{
-      margin-top:18px;padding:16px;border-radius:16px;background:var(--card);
-      border:1px solid var(--border);
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ---------- Layout helpers ---------- */
+    .wrap {
+      max-width: 1100px;
+      margin: auto;
+      padding: 56px 20px;
     }
-    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-    .pill{
-      display:inline-block;font-size:12px;color:var(--muted);
-      border:1px solid var(--border);padding:4px 10px;border-radius:999px;
+
+    .row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:10px 14px;border-radius:12px;background:var(--card);
-      border:1px solid var(--border);
+
+    .top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
-    .btn:hover{border-color:rgba(255,255,255,.22)}
-    table{width:100%;border-collapse:collapse;margin-top:10px}
-    th,td{padding:10px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
-    th{color:var(--muted);font-weight:600}
-    td.num{text-align:right}
-    .small{font-size:12px}
-    .loading{display:flex;gap:10px;align-items:center}
-    .dot{width:10px;height:10px;border-radius:999px;background:var(--link);opacity:.7;animation:pulse 1s infinite ease-in-out}
-    @keyframes pulse{0%{transform:scale(1);opacity:.4}50%{transform:scale(1.4);opacity:.9}100%{transform:scale(1);opacity:.4}}
-    .error{color:#ff9a9a}
-    footer{margin-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+    /* ---------- Typography helpers ---------- */
+    .mono { font-family: ui-monospace, Consolas, monospace; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+
+    h1 {
+      margin: 14px 0 6px;
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    /* ---------- Components ---------- */
+    .card {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 16px;
+
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--muted);
+
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+
+      padding: 10px 14px;
+      border-radius: 12px;
+
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .btn:hover { border-color: rgba(255, 255, 255, 0.22); }
+
+    /* ---------- Tables ---------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    td.num { text-align: right; }
+
+    /* ---------- Loading / Error UI ---------- */
+    .loading {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--link);
+
+      opacity: 0.7;
+      animation: pulse 1s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%   { transform: scale(1);   opacity: 0.4; }
+      50%  { transform: scale(1.4); opacity: 0.9; }
+      100% { transform: scale(1);   opacity: 0.4; }
+    }
+
+    .error { color: #ff9a9a; }
+
+    footer {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 13px;
+
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
+    <!-- ==========================================
+         Header / Top bar
+         - Back link
+         - League pills (id/type/season)
+         - Build info (filled by JS)
+         ========================================== -->
     <div class="top">
       <div class="row">
         <a class="mono" href="/">← vmoor</a>
-        <span class="pill mono" id="leaguePill">league_id: 1251933440564023296</span>
+
+        <!-- JS can update this pill if you ever swap leagues -->
+        <span class="pill mono" id="leaguePill">
+          league_id: 1251933440564023296
+        </span>
+
         <span class="pill">redraft</span>
         <span class="pill">season 2025</span>
       </div>
+
+      <!-- Optional: JS can display build/version timestamp -->
       <div class="muted mono" id="buildInfo"></div>
     </div>
 
+    <!-- ==========================================
+         League identity / meta (filled by JS)
+         ========================================== -->
     <h1 id="leagueName">Sleeper Dashboard</h1>
     <div class="muted" id="leagueMeta">Loading league info…</div>
 
+    <!-- ==========================================
+         Primary actions
+         - open in Sleeper (JS sets href)
+         - refresh button (JS attaches click handler)
+         ========================================== -->
     <div class="actions">
-      <a class="btn" id="openSleeper" href="#" target="_blank" rel="noopener">↗ Open in Sleeper</a>
-      <button class="btn" id="refreshBtn" type="button">↻ Refresh</button>
+      <a class="btn" id="openSleeper" href="#" target="_blank" rel="noopener">
+        ↗ Open in Sleeper
+      </a>
+
+      <button class="btn" id="refreshBtn" type="button">
+        ↻ Refresh
+      </button>
     </div>
 
+    <!-- ==========================================
+         Standings card
+         - loading state
+         - error state
+         - standings content/table (hidden until ready)
+         ========================================== -->
     <div class="card" id="statusCard">
+      <!-- Loading indicator (shown first) -->
       <div class="loading" id="loadingRow">
         <div class="dot"></div>
         <div class="muted">Pulling league + rosters from Sleeper…</div>
       </div>
-      <div class="error" id="errorRow" style="display:none;"></div>
-      <div id="content" style="display:none;">
-        <div class="row" style="justify-content:space-between;">
+
+      <!-- Error text (JS will show/hide + set message) -->
+      <div class="error" id="errorRow" style="display: none;"></div>
+
+      <!-- Main content (JS shows this when data loads) -->
+      <div id="content" style="display: none;">
+        <div class="row" style="justify-content: space-between;">
           <div>
             <div class="muted small">Standings</div>
             <div class="small muted" id="standingsNote"></div>
           </div>
+
+          <!-- JS sets "Last updated" timestamp -->
           <div class="pill mono" id="lastUpdated"></div>
         </div>
 
         <table id="standingsTable" aria-label="League standings">
           <thead>
             <tr>
-              <th style="width:60px;">Rank</th>
+              <th style="width: 60px;">Rank</th>
               <th>Team</th>
-              <th class="num" style="width:90px;">W–L–T</th>
-              <th class="num" style="width:90px;">PF</th>
-              <th class="num" style="width:90px;">PA</th>
-              <th class="num" style="width:90px;">Diff</th>
+              <th class="num" style="width: 90px;">W–L–T</th>
+              <th class="num" style="width: 90px;">PF</th>
+              <th class="num" style="width: 90px;">PA</th>
+              <th class="num" style="width: 90px;">Diff</th>
             </tr>
           </thead>
-          <tbody id="standingsBody"></tbody>
+          <tbody id="standingsBody">
+            <!-- filled by JS -->
+          </tbody>
         </table>
       </div>
     </div>
-            <!-- Matchups -->
-        <div class="card" style="margin-top:16px;">
-          <div class="row" style="justify-content:space-between; align-items:center;">
-            <div>
-              <div class="muted small">Matchups</div>
-              <div class="small muted" id="matchupsNote">Select a week to view matchups.</div>
-            </div>
 
-            <div class="row">
-              <label class="pill mono" for="weekSelect">week</label>
-              <select id="weekSelect" class="btn" style="padding:10px 12px;">
-                <!-- filled by JS -->
-              </select>
-              <button class="btn" id="loadWeekBtn" type="button">Load</button>
-            </div>
+    <!-- ==========================================
+         Matchups card
+         - week selector (filled by JS)
+         - "Load" button triggers a weekly fetch/render
+         ========================================== -->
+    <div class="card" style="margin-top: 16px;">
+      <div class="row" style="justify-content: space-between; align-items: center;">
+        <div>
+          <div class="muted small">Matchups</div>
+          <div class="small muted" id="matchupsNote">
+            Select a week to view matchups.
           </div>
-
-          <table id="matchupsTable" aria-label="Weekly matchups" style="margin-top:12px;">
-            <thead>
-              <tr>
-                <th style="width:90px;">Matchup</th>
-                <th>Team A</th>
-                <th class="num" style="width:90px;">Pts</th>
-                <th>Team B</th>
-                <th class="num" style="width:90px;">Pts</th>
-              </tr>
-            </thead>
-            <tbody id="matchupsBody"></tbody>
-          </table>
         </div>
-                <!-- Playoffs -->
-        <div class="card" style="margin-top:16px;">
-          <div class="row" style="justify-content:space-between; align-items:center;">
-            <div>
-              <div class="muted small">Playoffs</div>
-              <div class="small muted" id="playoffsNote">Loading bracket…</div>
-            </div>
 
-            <div class="row">
-              <button class="btn" id="btnWinners" type="button">Winners</button>
-              <button class="btn" id="btnLosers" type="button">Losers</button>
-            </div>
-          </div>
+        <div class="row">
+          <label class="pill mono" for="weekSelect">week</label>
 
-          <table id="playoffsTable" aria-label="Playoff bracket" style="margin-top:12px;">
-            <thead>
-              <tr>
-                <th style="width:90px;">Round</th>
-                <th style="width:90px;">Game</th>
-                <th>Team A</th>
-                <th>Team B</th>
-                <th style="width:120px;">Winner</th>
-              </tr>
-            </thead>
-            <tbody id="playoffsBody"></tbody>
-          </table>
+          <!-- JS fills options like Week 1..N -->
+          <select id="weekSelect" class="btn" style="padding: 10px 12px;">
+            <!-- filled by JS -->
+          </select>
+
+          <button class="btn" id="loadWeekBtn" type="button">
+            Load
+          </button>
         </div>
+      </div>
+
+      <table id="matchupsTable" aria-label="Weekly matchups" style="margin-top: 12px;">
+        <thead>
+          <tr>
+            <th style="width: 90px;">Matchup</th>
+            <th>Team A</th>
+            <th class="num" style="width: 90px;">Pts</th>
+            <th>Team B</th>
+            <th class="num" style="width: 90px;">Pts</th>
+          </tr>
+        </thead>
+        <tbody id="matchupsBody">
+          <!-- filled by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ==========================================
+         Playoffs card
+         - toggle winners / losers brackets
+         - bracket table populated by JS
+         ========================================== -->
+    <div class="card" style="margin-top: 16px;">
+      <div class="row" style="justify-content: space-between; align-items: center;">
+        <div>
+          <div class="muted small">Playoffs</div>
+          <div class="small muted" id="playoffsNote">Loading bracket…</div>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="btnWinners" type="button">Winners</button>
+          <button class="btn" id="btnLosers" type="button">Losers</button>
+        </div>
+      </div>
+
+      <table id="playoffsTable" aria-label="Playoff bracket" style="margin-top: 12px;">
+        <thead>
+          <tr>
+            <th style="width: 90px;">Round</th>
+            <th style="width: 90px;">Game</th>
+            <th>Team A</th>
+            <th>Team B</th>
+            <th style="width: 120px;">Winner</th>
+          </tr>
+        </thead>
+        <tbody id="playoffsBody">
+          <!-- filled by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ==========================================
+         Footer
+         ========================================== -->
     <footer>
       <div>Data via Sleeper public API</div>
       <div class="mono" id="apiInfo"></div>
     </footer>
   </div>
-  
+
+  <!-- ==========================================
+       Global config for sleeper.js
+       Keep these visible in HTML for quick edits
+       ========================================== -->
   <script>
-    // Keep these visible in the HTML for easy editing later
     window.VMOOR = {
       leagueId: "1251933440564023296",
       season: 2025,
       leagueType: "redraft"
     };
   </script>
+
+  <!-- Main JS bundle for this page -->
   <script src="./sleeper.js" defer></script>
 </body>
 </html>
