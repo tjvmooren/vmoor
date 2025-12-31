@@ -132,12 +132,39 @@
             <tbody id="matchupsBody"></tbody>
           </table>
         </div>
+                <!-- Playoffs -->
+        <div class="card" style="margin-top:16px;">
+          <div class="row" style="justify-content:space-between; align-items:center;">
+            <div>
+              <div class="muted small">Playoffs</div>
+              <div class="small muted" id="playoffsNote">Loading bracket…</div>
+            </div>
+
+            <div class="row">
+              <button class="btn" id="btnWinners" type="button">Winners</button>
+              <button class="btn" id="btnLosers" type="button">Losers</button>
+            </div>
+          </div>
+
+          <table id="playoffsTable" aria-label="Playoff bracket" style="margin-top:12px;">
+            <thead>
+              <tr>
+                <th style="width:90px;">Round</th>
+                <th style="width:90px;">Game</th>
+                <th>Team A</th>
+                <th>Team B</th>
+                <th style="width:120px;">Winner</th>
+              </tr>
+            </thead>
+            <tbody id="playoffsBody"></tbody>
+          </table>
+        </div>
     <footer>
       <div>Data via Sleeper public API</div>
       <div class="mono" id="apiInfo"></div>
     </footer>
   </div>
-
+  
   <script>
     // Keep these visible in the HTML for easy editing later
     window.VMOOR = {
