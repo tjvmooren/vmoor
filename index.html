@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>vmoor</title>
+  <meta name="description" content="Projects, labs, and tools by Tyler Vander Mooren."/>
+  <style>
+    :root {
+      --bg:#0b0d12; --fg:#e8ebf2; --muted:#a8b0c2;
+      --card:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+      --link:#8ab4ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:radial-gradient(1000px 500px at 20% 0%,rgba(138,180,255,.18),transparent 50%),var(--bg);
+      color:var(--fg);min-height:100vh
+    }
+    a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:980px;margin:auto;padding:64px 20px}
+    header{display:flex;justify-content:space-between;align-items:baseline}
+    .mono{font-family:ui-monospace,Consolas,monospace}
+    .brand{font-weight:700;font-size:22px}
+    .tag{color:var(--muted);font-size:14px}
+    .hero{margin-top:56px}
+    h1{font-size:clamp(34px,5vw,52px);margin:0 0 14px}
+    p{color:var(--muted);max-width:70ch}
+    .cta{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      padding:10px 14px;border-radius:12px;
+      background:var(--card);border:1px solid var(--border)
+    }
+    .btn:hover{border-color:rgba(255,255,255,.22)}
+    footer{margin-top:48px;font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="brand mono">vmoor.com</div>
+        <div class="tag">Projects • Labs • Tools</div>
+      </div>
+      <div class="tag mono">tyler v.</div>
+    </header>
+
+    <section class="hero">
+      <h1>Building practical systems.</h1>
+      <p>
+        This is my dev hub — a home for experiments, security-focused projects,
+        and things I’m building for fun or learning.
+      </p>
+
+      <div class="cta">
+        <a class="btn" href="/sleeper">🏈 Sleeper Dashboard</a>
+        <a class="btn" href="/hall">🏆 Hall of Champions</a>
+        <a class="btn" href="https://github.com/" target="_blank">↗ GitHub</a>
+      </div>
+    </section>
+
+    <footer>
+      © <span class="mono">vmoor</span>
+    </footer>
+  </div>
+</body>
+</html>
