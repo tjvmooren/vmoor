@@ -1,13 +1,122 @@
-<!doctype html><html lang="en"><head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Sleeper Dashboard • vmoor</title>
-<style>body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:#0b0d12;color:#e8ebf2}
-.wrap{max-width:980px;margin:auto;padding:64px 20px}a{color:#8ab4ff;text-decoration:none}a:hover{text-decoration:underline}
-.card{margin-top:18px;padding:16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
-.muted{color:#a8b0c2}</style></head><body>
-<div class="wrap">
-  <a href="/">← back</a>
-  <h1>Sleeper Dashboard</h1>
-  <p class="muted">Coming online next. This page will pull league data from the Sleeper API.</p>
-  <div class="card">Next: standings • matchups • roster summaries • weekly recap</div>
-</div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sleeper • vmoor</title>
+  <meta name="description" content="Sleeper league dashboard for vmoor.com" />
+  <style>
+    :root{
+      --bg:#0b0d12; --fg:#e8ebf2; --muted:#a8b0c2;
+      --card:rgba(255,255,255,.06); --border:rgba(255,255,255,.12);
+      --link:#8ab4ff; --ok:#aaffd6; --warn:#ffd38a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:radial-gradient(1000px 500px at 20% 0%,rgba(138,180,255,.18),transparent 50%),var(--bg);
+      color:var(--fg); min-height:100vh;
+    }
+    a{color:var(--link); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:auto;padding:56px 20px}
+    .mono{font-family:ui-monospace,Consolas,monospace}
+    .top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    h1{margin:14px 0 6px;font-size:clamp(28px,4vw,42px)}
+    .muted{color:var(--muted)}
+    .card{
+      margin-top:18px;padding:16px;border-radius:16px;background:var(--card);
+      border:1px solid var(--border);
+    }
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .pill{
+      display:inline-block;font-size:12px;color:var(--muted);
+      border:1px solid var(--border);padding:4px 10px;border-radius:999px;
+    }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 14px;border-radius:12px;background:var(--card);
+      border:1px solid var(--border);
+    }
+    .btn:hover{border-color:rgba(255,255,255,.22)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px 10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+    th{color:var(--muted);font-weight:600}
+    td.num{text-align:right}
+    .small{font-size:12px}
+    .loading{display:flex;gap:10px;align-items:center}
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--link);opacity:.7;animation:pulse 1s infinite ease-in-out}
+    @keyframes pulse{0%{transform:scale(1);opacity:.4}50%{transform:scale(1.4);opacity:.9}100%{transform:scale(1);opacity:.4}}
+    .error{color:#ff9a9a}
+    footer{margin-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="row">
+        <a class="mono" href="/">← vmoor</a>
+        <span class="pill mono" id="leaguePill">league_id: 1251933440564023296</span>
+        <span class="pill">redraft</span>
+        <span class="pill">season 2025</span>
+      </div>
+      <div class="muted mono" id="buildInfo"></div>
+    </div>
+
+    <h1 id="leagueName">Sleeper Dashboard</h1>
+    <div class="muted" id="leagueMeta">Loading league info…</div>
+
+    <div class="actions">
+      <a class="btn" id="openSleeper" href="#" target="_blank" rel="noopener">↗ Open in Sleeper</a>
+      <button class="btn" id="refreshBtn" type="button">↻ Refresh</button>
+    </div>
+
+    <div class="card" id="statusCard">
+      <div class="loading" id="loadingRow">
+        <div class="dot"></div>
+        <div class="muted">Pulling league + rosters from Sleeper…</div>
+      </div>
+      <div class="error" id="errorRow" style="display:none;"></div>
+      <div id="content" style="display:none;">
+        <div class="row" style="justify-content:space-between;">
+          <div>
+            <div class="muted small">Standings</div>
+            <div class="small muted" id="standingsNote"></div>
+          </div>
+          <div class="pill mono" id="lastUpdated"></div>
+        </div>
+
+        <table id="standingsTable" aria-label="League standings">
+          <thead>
+            <tr>
+              <th style="width:60px;">Rank</th>
+              <th>Team</th>
+              <th class="num" style="width:90px;">W–L–T</th>
+              <th class="num" style="width:90px;">PF</th>
+              <th class="num" style="width:90px;">PA</th>
+              <th class="num" style="width:90px;">Diff</th>
+            </tr>
+          </thead>
+          <tbody id="standingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      <div>Data via Sleeper public API</div>
+      <div class="mono" id="apiInfo"></div>
+    </footer>
+  </div>
+
+  <script>
+    // Keep these visible in the HTML for easy editing later
+    window.VMOOR = {
+      leagueId: "1251933440564023296",
+      season: 2025,
+      leagueType: "redraft"
+    };
+  </script>
+  <script src="./sleeper.js" defer></script>
+</body>
+</html>
