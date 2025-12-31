@@ -125,6 +125,45 @@
       color: inherit;
       cursor: pointer;
     }
+    
+    /* Champions view layout */
+    .champions-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:14px;
+    }
+
+    .champ-card{
+      padding:14px;
+      border-radius:16px;
+      background:var(--card);
+      border:1px solid var(--border);
+    }
+
+    .champ-year{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .champ-name{
+      margin-top:6px;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .champ-sub{
+      margin-top:6px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .champ-badges{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
 
     .btn:hover { border-color: rgba(255, 255, 255, 0.22); }
 
@@ -224,13 +263,16 @@
          - refresh button (JS attaches click handler)
          ========================================== -->
     <div class="actions">
+      <!-- Tab buttons (single-page switch) -->
+      <button class="btn" id="tabDashboard" type="button">📊 Standings</button>
+      <button class="btn" id="tabChampions" type="button">🏆 Hall of Champions</button>
+
+      <!-- External Sleeper link still available -->
       <a class="btn" id="openSleeper" href="#" target="_blank" rel="noopener">
         ↗ Open in Sleeper
       </a>
 
-      <button class="btn" id="refreshBtn" type="button">
-        ↻ Refresh
-      </button>
+      <button class="btn" id="refreshBtn" type="button">↻ Refresh</button>
     </div>
 
     <!-- ==========================================
@@ -239,123 +281,141 @@
          - error state
          - standings content/table (hidden until ready)
          ========================================== -->
-    <div class="card" id="statusCard">
-      <!-- Loading indicator (shown first) -->
-      <div class="loading" id="loadingRow">
-        <div class="dot"></div>
-        <div class="muted">Pulling league + rosters from Sleeper…</div>
-      </div>
-
-      <!-- Error text (JS will show/hide + set message) -->
-      <div class="error" id="errorRow" style="display: none;"></div>
-
-      <!-- Main content (JS shows this when data loads) -->
-      <div id="content" style="display: none;">
-        <div class="row" style="justify-content: space-between;">
-          <div>
-            <div class="muted small">Standings</div>
-            <div class="small muted" id="standingsNote"></div>
-          </div>
-
-          <!-- JS sets "Last updated" timestamp -->
-          <div class="pill mono" id="lastUpdated"></div>
+    <section id="viewDashboard">
+      <div class="card" id="statusCard">
+        <!-- Loading indicator (shown first) -->
+        <div class="loading" id="loadingRow">
+          <div class="dot"></div>
+          <div class="muted">Pulling league + rosters from Sleeper…</div>
         </div>
 
-        <table id="standingsTable" aria-label="League standings">
+        <!-- Error text (JS will show/hide + set message) -->
+        <div class="error" id="errorRow" style="display: none;"></div>
+
+        <!-- Main content (JS shows this when data loads) -->
+        <div id="content" style="display: none;">
+          <div class="row" style="justify-content: space-between;">
+            <div>
+              <div class="muted small">Standings</div>
+              <div class="small muted" id="standingsNote"></div>
+            </div>
+
+            <!-- JS sets "Last updated" timestamp -->
+            <div class="pill mono" id="lastUpdated"></div>
+          </div>
+
+          <table id="standingsTable" aria-label="League standings">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Rank</th>
+                <th>Team</th>
+                <th class="num" style="width: 90px;">W–L–T</th>
+                <th class="num" style="width: 90px;">PF</th>
+                <th class="num" style="width: 90px;">PA</th>
+                <th class="num" style="width: 90px;">Diff</th>
+              </tr>
+            </thead>
+            <tbody id="standingsBody">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <!-- ==========================================
+          Matchups card
+          - week selector (filled by JS)
+          - "Load" button triggers a weekly fetch/render
+          ========================================== -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="row" style="justify-content: space-between; align-items: center;">
+          <div>
+            <div class="muted small">Matchups</div>
+            <div class="small muted" id="matchupsNote">
+              Select a week to view matchups.
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="pill mono" for="weekSelect">week</label>
+
+            <!-- JS fills options like Week 1..N -->
+            <select id="weekSelect" class="btn" style="padding: 10px 12px;">
+              <!-- filled by JS -->
+            </select>
+
+            <button class="btn" id="loadWeekBtn" type="button">
+              Load
+            </button>
+          </div>
+        </div>
+
+        <table id="matchupsTable" aria-label="Weekly matchups" style="margin-top: 12px;">
           <thead>
             <tr>
-              <th style="width: 60px;">Rank</th>
-              <th>Team</th>
-              <th class="num" style="width: 90px;">W–L–T</th>
-              <th class="num" style="width: 90px;">PF</th>
-              <th class="num" style="width: 90px;">PA</th>
-              <th class="num" style="width: 90px;">Diff</th>
+              <th style="width: 90px;">Matchup</th>
+              <th>Team A</th>
+              <th class="num" style="width: 90px;">Pts</th>
+              <th>Team B</th>
+              <th class="num" style="width: 90px;">Pts</th>
             </tr>
           </thead>
-          <tbody id="standingsBody">
+          <tbody id="matchupsBody">
             <!-- filled by JS -->
           </tbody>
         </table>
       </div>
-    </div>
 
-    <!-- ==========================================
-         Matchups card
-         - week selector (filled by JS)
-         - "Load" button triggers a weekly fetch/render
-         ========================================== -->
-    <div class="card" style="margin-top: 16px;">
-      <div class="row" style="justify-content: space-between; align-items: center;">
-        <div>
-          <div class="muted small">Matchups</div>
-          <div class="small muted" id="matchupsNote">
-            Select a week to view matchups.
+      <!-- ==========================================
+          Playoffs card
+          - toggle winners / losers brackets
+          - bracket table populated by JS
+          ========================================== -->
+      <div class="card" style="margin-top: 16px;">
+        <div class="row" style="justify-content: space-between; align-items: center;">
+          <div>
+            <div class="muted small">Playoffs</div>
+            <div class="small muted" id="playoffsNote">Loading bracket…</div>
+          </div>
+
+          <div class="row">
+            <button class="btn" id="btnWinners" type="button">Winners</button>
+            <button class="btn" id="btnLosers" type="button">Losers</button>
           </div>
         </div>
 
-        <div class="row">
-          <label class="pill mono" for="weekSelect">week</label>
-
-          <!-- JS fills options like Week 1..N -->
-          <select id="weekSelect" class="btn" style="padding: 10px 12px;">
+        <table id="playoffsTable" aria-label="Playoff bracket" style="margin-top: 12px;">
+          <thead>
+            <tr>
+              <th style="width: 90px;">Round</th>
+              <th style="width: 90px;">Game</th>
+              <th>Team A</th>
+              <th>Team B</th>
+              <th style="width: 120px;">Winner</th>
+            </tr>
+          </thead>
+          <tbody id="playoffsBody">
             <!-- filled by JS -->
-          </select>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <!-- CHAMPIONS VIEW -->
+    <section id="viewChampions" style="display:none;">
+      <div class="card" style="margin-top:18px;">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <div>
+            <div class="muted small">Hall of Champions</div>
+            <div class="small muted">League champs by season.</div>
+          </div>
+          <div class="pill mono" id="championsMeta"></div>
+        </div>
 
-          <button class="btn" id="loadWeekBtn" type="button">
-            Load
-          </button>
+        <div id="championsGrid" class="champions-grid" style="margin-top:12px;">
+          <!-- champion cards injected by JS -->
         </div>
       </div>
-
-      <table id="matchupsTable" aria-label="Weekly matchups" style="margin-top: 12px;">
-        <thead>
-          <tr>
-            <th style="width: 90px;">Matchup</th>
-            <th>Team A</th>
-            <th class="num" style="width: 90px;">Pts</th>
-            <th>Team B</th>
-            <th class="num" style="width: 90px;">Pts</th>
-          </tr>
-        </thead>
-        <tbody id="matchupsBody">
-          <!-- filled by JS -->
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ==========================================
-         Playoffs card
-         - toggle winners / losers brackets
-         - bracket table populated by JS
-         ========================================== -->
-    <div class="card" style="margin-top: 16px;">
-      <div class="row" style="justify-content: space-between; align-items: center;">
-        <div>
-          <div class="muted small">Playoffs</div>
-          <div class="small muted" id="playoffsNote">Loading bracket…</div>
-        </div>
-
-        <div class="row">
-          <button class="btn" id="btnWinners" type="button">Winners</button>
-          <button class="btn" id="btnLosers" type="button">Losers</button>
-        </div>
-      </div>
-
-      <table id="playoffsTable" aria-label="Playoff bracket" style="margin-top: 12px;">
-        <thead>
-          <tr>
-            <th style="width: 90px;">Round</th>
-            <th style="width: 90px;">Game</th>
-            <th>Team A</th>
-            <th>Team B</th>
-            <th style="width: 120px;">Winner</th>
-          </tr>
-        </thead>
-        <tbody id="playoffsBody">
-          <!-- filled by JS -->
-        </tbody>
-      </table>
-    </div>
+    </section>
 
     <!-- ==========================================
          Footer

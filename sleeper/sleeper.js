@@ -49,11 +49,57 @@
     btnLosersEl: document.getElementById("btnLosers"),
     playoffsBodyEl: document.getElementById("playoffsBody"),
     playoffsNoteEl: document.getElementById("playoffsNote"),
+
+    //Champion cards
+    viewDashboard: document.getElementById("viewDashboard"),
+    viewChampions: document.getElementById("viewChampions"),
+    tabDashboard: document.getElementById("tabDashboard"),
+    tabChampions: document.getElementById("tabChampions"),
+    championsGrid: document.getElementById("championsGrid"),
+    championsMeta: document.getElementById("championsMeta"),
   };
 
   // Cosmetic info
   if (els.apiInfoEl) els.apiInfoEl.textContent = `api: ${API_BASE}`;
   if (els.buildInfoEl) els.buildInfoEl.textContent = `build: ${new Date().toISOString().slice(0, 10)}`;
+  
+  // Champion (hardcode - Sleeper doesn't store champions)
+  const CHAMPIONS = [
+    // Champion List
+    { season: 2025, champion: "Chandler", runnerUp: "Will", note: "Dominate Win in Finals" },
+    { season: 2024, champion: "Tyler Vander Mooren", runnerUp: "", note: "Dominant playoffs" },
+  ];
+
+  function renderChampions() {
+    if (!els.championsGrid) return;
+
+    els.championsGrid.innerHTML = "";
+
+    // newest season first
+    const sorted = [...CHAMPIONS].sort((a, b) => b.season - a.season);
+
+    for (const entry of sorted) {
+      const card = document.createElement("div");
+      card.className = "champ-card";
+
+      card.innerHTML = `
+        <div class="champ-year mono">Season ${entry.season}</div>
+        <div class="champ-name">🏆 ${escapeHtml(entry.champion)}</div>
+        <div class="champ-sub">Runner-up: ${escapeHtml(entry.runnerUp || "—")}</div>
+        ${entry.note ? `<div class="champ-sub">${escapeHtml(entry.note)}</div>` : ""}
+        <div class="champ-badges">
+          <span class="pill">Champion</span>
+          ${entry.runnerUp ? `<span class="pill">Runner-up recorded</span>` : ""}
+        </div>
+      `;
+
+      els.championsGrid.appendChild(card);
+    }
+
+    if (els.championsMeta) {
+      els.championsMeta.textContent = `${sorted.length} seasons`;
+    }
+  }
 
   // ---------------------------
   // Caching (sessionStorage)
@@ -94,6 +140,23 @@
     if (els.errorRowEl) els.errorRowEl.style.display = "none";
     if (els.contentEl) els.contentEl.style.display = "block";
   }
+
+  function setActiveTab(tab) {
+  // Optional: add a subtle "active" border
+  // If you want: create a CSS class .active { border-color: var(--link); }
+  els.tabDashboard?.classList.toggle("active", tab === "dashboard");
+  els.tabChampions?.classList.toggle("active", tab === "champions");
+  }
+
+  function showView(view) {
+    const isDashboard = view === "dashboard";
+
+    if (els.viewDashboard) els.viewDashboard.style.display = isDashboard ? "block" : "none";
+    if (els.viewChampions) els.viewChampions.style.display = isDashboard ? "none" : "block";
+
+    setActiveTab(isDashboard ? "dashboard" : "champions");
+  }
+
 
   // =========================================================================
   // Network helpers
@@ -537,6 +600,19 @@
       loadPlayoffs("losers", { bypassCache: true })
     );
   }
+  if (els.tabDashboard) {
+    els.tabDashboard.addEventListener("click", () => showView("dashboard"));
+  }
+
+  if (els.tabChampions) {
+    els.tabChampions.addEventListener("click", () => {
+      renderChampions();
+      showView("champions");
+    });
+  }
+
+  // default view on load
+  showView("dashboard");
 
   // =========================================================================
   // Go time
