@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anime | vmoor.com</title>
+
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="stylesheet" href="/assets/css/anime.css" />
+
+  <meta name="color-scheme" content="dark light" />
+</head>
+<body>
+  <!-- reuse your existing site header/nav here -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/"><- vmoor</a>
+      <nav class="nav">
+        <a href="/streams/index.html">-> Streams</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1>Find something to watch.</h1>
+          <p>Trending, top rated, and seasonal picks — powered by AniList.</p>
+
+          <form id="searchForm" class="search">
+            <input id="searchInput" type="search" placeholder="Search anime (e.g., 'Frieren', 'Jujutsu Kaisen')"
+                   autocomplete="off" />
+            <button type="submit">Search</button>
+          </form>
+
+          <div class="chips">
+            <button class="chip" data-quick="TRENDING_DESC">Trending</button>
+            <button class="chip" data-quick="POPULARITY_DESC">Popular</button>
+            <button class="chip" data-quick="SCORE_DESC">Top Rated</button>
+          </div>
+
+          <div id="statusLine" class="status" aria-live="polite"></div>
+        </div>
+
+        <div class="hero-spotlight">
+          <div class="spotlight-card" id="spotlightCard">
+            <div class="spotlight-skeleton"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="homeSections">
+      <div class="section-head">
+        <h2>Trending now</h2>
+        <a class="more" href="#" data-more="trending">Refresh</a>
+      </div>
+      <div class="row" id="rowTrending"></div>
+
+      <div class="section-head">
+        <h2>This season</h2>
+      </div>
+      <div class="row" id="rowSeason"></div>
+
+      <div class="section-head">
+        <h2>Top rated</h2>
+      </div>
+      <div class="row" id="rowTop"></div>
+    </section>
+
+    <section class="wrap section hidden" id="searchSection">
+      <div class="section-head">
+        <h2 id="searchTitle">Search results</h2>
+        <div class="pager">
+          <button id="prevPage" disabled>Prev</button>
+          <span id="pageLabel">1</span>
+          <button id="nextPage" disabled>Next</button>
+        </div>
+      </div>
+
+      <div class="grid" id="searchGrid"></div>
+    </section>
+  </main>
+
+  <!-- simple modal for details -->
+  <dialog id="animeModal" class="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <div id="modalBody" class="modal-body"></div>
+  </dialog>
+
+  <script src="/assets/js/anime.js" defer></script>
+</body>
+</html>
