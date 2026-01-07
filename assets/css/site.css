@@ -1,0 +1,427 @@
+/* =====================================================
+   vmoor.com — site.css (merged globals + page components)
+   ===================================================== */
+
+/* ---------- Theme variables ---------- */
+:root {
+  --bg: #0b0d12;
+  --fg: #e8ebf2;
+  --muted: #a8b0c2;
+
+  --card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+
+  --link: #8ab4ff;
+
+  /* status colors */
+  --warn: rgba(255, 201, 71, 0.9);
+  --good: rgba(71, 255, 167, 0.9);
+  --bad: rgba(255, 92, 92, 0.9);
+
+  /* alternate naming used on some pages */
+  --ok: #aaffd6;
+}
+
+/* ---------- Global reset-ish ---------- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: var(--fg);
+
+  background:
+    radial-gradient(
+      1000px 500px at 20% 0%,
+      rgba(138, 180, 255, 0.18),
+      transparent 50%
+    ),
+    var(--bg);
+}
+
+/* ---------- Base elements ---------- */
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  margin: 14px 0 6px;
+}
+
+p {
+  max-width: 70ch;
+  color: var(--muted);
+}
+
+/* ---------- Layout helpers ---------- */
+.wrap {
+  max-width: 1100px;
+  margin: auto;
+  padding: 56px 20px;
+}
+
+header,
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+footer {
+  margin-top: 26px;
+  color: var(--muted);
+  font-size: 13px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Typography helpers ---------- */
+.mono { font-family: ui-monospace, Consolas, monospace; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; color: var(--muted); line-height: 1.35; }
+
+.brand { font-size: 22px; font-weight: 700; }
+.tag { font-size: 14px; color: var(--muted); }
+
+/* ---------- Sections ---------- */
+.hero { margin-top: 56px; }
+
+.cta {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: inherit;
+  cursor: pointer;
+}
+
+.btn:hover { border-color: rgba(255, 255, 255, 0.22); }
+
+/* Smaller button variant used on streams */
+.mini-btn {
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 13px;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.mini-btn:hover {
+  border-color: rgba(255,255,255,0.22);
+  text-decoration: none;
+}
+
+/* ---------- Cards / Panels ---------- */
+.card {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.panel {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.panel h2 { margin: 0 0 10px; font-size: 18px; }
+
+/* ---------- Pills / Badges ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.badge.good { border-color: rgba(71,255,167,0.35); color: rgba(200,255,225,0.95); }
+.badge.warn { border-color: rgba(255,201,71,0.35); color: rgba(255,240,210,0.95); }
+.badge.bad  { border-color: rgba(255,92,92,0.35);  color: rgba(255,220,220,0.95); }
+
+/* tiny dot indicator */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--warn);
+  box-shadow: 0 0 18px rgba(255, 201, 71, 0.25);
+}
+
+/* ---------- Misc helpers ---------- */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 8px 0;
+}
+
+/* =====================================================
+   Streams page components (tabs + stream cards)
+   ===================================================== */
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  margin-top: 14px;
+}
+
+.tab {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab:hover {
+  color: var(--fg);
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.03);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--fg);
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+}
+
+.tab-badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Tab content visibility */
+.tab-panel[hidden] { display: none; }
+
+/* ---------- Card grid ---------- */
+.grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.stream-card {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thumb-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: linear-gradient(135deg, rgba(138,180,255,0.22), rgba(255,255,255,0.02));
+}
+
+.player { width: 100%; height: 100%; border: 0; display: block; }
+
+.stream-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.stream-title { font-weight: 700; line-height: 1.2; }
+
+.stream-meta {
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stream-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Better select readability */
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #111420;
+  color: #e8ebf2;
+  font-size: 14px;
+  line-height: 1.3;
+  outline: none;
+  cursor: pointer;
+}
+
+.select option { background: #0b0d12; color: #e8ebf2; }
+
+.select:focus {
+  border-color: rgba(138,180,255,0.6);
+  box-shadow: 0 0 0 1px rgba(138,180,255,0.4);
+}
+
+label.small { display: block; margin-bottom: 6px; }
+
+/* =====================================================
+   Champions page components
+   ===================================================== */
+.champions-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:14px;
+}
+
+.champ-card{
+  padding:14px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--border);
+}
+
+.champ-year{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.champ-name{
+  margin-top:6px;
+  font-size:18px;
+  font-weight:700;
+}
+
+.champ-sub{
+  margin-top:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.champ-badges{
+  margin-top:10px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+/* =====================================================
+   Tables (used on some pages)
+   ===================================================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 14px;
+}
+
+th { color: var(--muted); font-weight: 600; }
+td.num { text-align: right; }
+
+/* =====================================================
+   Loading / Error UI
+   ===================================================== */
+.loading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.loading .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--link);
+  opacity: 0.7;
+  animation: pulse 1s infinite ease-in-out;
+  box-shadow: none; /* keep loading dot clean */
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 0.4; }
+  50%  { transform: scale(1.4); opacity: 0.9; }
+  100% { transform: scale(1);   opacity: 0.4; }
+}
+
+.error { color: #ff9a9a; }
