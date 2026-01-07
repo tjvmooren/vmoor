@@ -81,12 +81,29 @@
     document.getElementById("twitch-slot").innerHTML = renderTwitchCard(twitch);
     document.getElementById("streamed-slot").innerHTML = renderStreamedCard(streamed);
 
+  
+
     initTabs();
     initStreamedCard(streamed).catch(err => {
       setStreamedStatus("Error loading matches", "bad");
       console.error(err);
     });
+    function stopIframes(panel) {
+      panel.querySelectorAll("iframe").forEach(iframe => {
+        if (!iframe.dataset.src) {
+                  iframe.dataset.src = iframe.src;
+        }
+        iframe.src = "";
+      });
+    }
 
+    function startIframes(panel) {
+      panel.querySelectorAll("iframe").forEach(iframe => {
+        if (iframe.dataset.src && iframe.src !== iframe.dataset.src) {
+          iframe.src = iframe.dataset.src;
+        }
+      });
+    }
     // ============================
     // TABS
     // ============================
@@ -101,14 +118,23 @@
 
       tabs.forEach(t => t.tab.addEventListener("click", () => setActive(t.key)));
 
-      function setActive(key) {
-        tabs.forEach(t => {
-          const active = (t.key === key);
-          t.tab.setAttribute("aria-selected", String(active));
-          t.panel.toggleAttribute("hidden", !active);
-        });
-        localStorage.setItem("streamTab", key);
-      }
+    function setActive(key) {
+      tabs.forEach(t => {
+        const active = (t.key === key);
+
+        t.tab.setAttribute("aria-selected", String(active));
+
+        if (!active) {
+          stopIframes(t.panel);   // ⛔ stop playback
+          t.panel.setAttribute("hidden", "");
+        } else {
+          t.panel.removeAttribute("hidden");
+          startIframes(t.panel); // ▶️ restart when shown
+        }
+      });
+
+      localStorage.setItem("streamTab", key);
+    }
     }
 
     // ============================
@@ -121,7 +147,7 @@
       return `
         <article class="stream-card">
           <div class="thumb-wrap">
-            <iframe class="player" src="${src}" allowfullscreen scrolling="no"></iframe>
+            <iframe class="player" data-src="${src}" src="${src}" allowfullscreen scrolling="no"></iframe>
           </div>
 
           <div class="stream-top">
@@ -150,7 +176,7 @@
       return `
         <article class="stream-card">
           <div class="thumb-wrap">
-            <iframe class="player" id="streamed-player" src="" allowfullscreen></iframe>
+            <iframe class="player" id="streamed-player" data-src="" src="" allowfullscreen></iframe>
           </div>
 
           <div class="stream-top">
@@ -261,7 +287,10 @@
 
       if (!best || !best.embedUrl) { setStreamedStatus("Bad stream data", "bad"); return; }
 
-      document.getElementById("streamed-player").src = best.embedUrl;
+      const iframe = document.getElementById("streamed-player");
+      iframe.dataset.src = best.embedUrl;
+      iframe.src = best.embedUrl;
+      
       const open = document.getElementById("streamed-open");
       open.href = best.embedUrl;
 
