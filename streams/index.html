@@ -191,10 +191,19 @@
 
           <div class="divider"></div>
 
-          <label class="small" for="streamed-match-select">Pick a live match</label>
+          <label class="small">Pick a live match</label>
+
+          <div class="tabs" role="tablist" aria-label="Streamed sports">
+            <button class="tab" type="button" id="sport-football" data-sport="football" aria-selected="true">Football</button>
+            <button class="tab" type="button" id="sport-basketball" data-sport="basketball" aria-selected="false">Basketball</button>
+            <button class="tab" type="button" id="sport-soccer" data-sport="soccer" aria-selected="false">Soccer</button>
+            <button class="tab" type="button" id="sport-hockey" data-sport="hockey" aria-selected="false">Hockey</button>
+          </div>
+
           <select class="select" id="streamed-match-select" disabled>
             <option>Loading matches…</option>
           </select>
+
 
           <div class="stream-actions">
             <button class="mini-btn" type="button" id="streamed-reload">Reload</button>
@@ -205,25 +214,117 @@
         </article>
       `;
     }
-
-    async function initStreamedCard(cfg) {
-      const select = document.getElementById("streamed-match-select");
-      const reloadBtn = document.getElementById("streamed-reload");
-
-      reloadBtn.addEventListener("click", async () => {
-        await loadMatchesAndFirstStream(cfg);
-      });
-
-      select.addEventListener("change", async (e) => {
-        const matchId = e.target.value;
-        if (!matchId) return;
-        await loadStreamsForMatchId(matchId);
-      });
-
-      await loadMatchesAndFirstStream(cfg);
+    function inferSportFromMatch(match) {
+      // If API includes category, use it.
+      if (match && typeof match.category === "string" && match.category.trim() !== "") {
+        return match.category.trim().toLowerCase();
+      }
+      // Fallback if category is missing for some reason
+      return "other";
     }
 
-    async function loadMatchesAndFirstStream(cfg) {
+    function mapUiSportToApiCategory(uiSport) {
+      const s = String(uiSport || "").toLowerCase();
+
+      // Your UI: Soccer should show API's "football" (EU football)
+      if (s === "soccer") return "football";
+
+      // Your UI: Football should show American football (whatever API calls it)
+      // We'll try a few common ids, but you should confirm from your console log.
+      if (s === "football") return "american-football";
+
+      // basketball/hockey usually match as-is
+      return s;
+    }
+
+    function getSportMatches(matches, uiSport) {
+      const mapped = mapUiSportToApiCategory(uiSport);
+
+      // exact category match
+      let filtered = matches.filter(m => String(m.category || "").toLowerCase() === mapped);
+
+      // If "american-football" didn't match anything, try common alternatives
+      if (String(uiSport || "").toLowerCase() === "football" && filtered.length === 0) {
+        const candidates = [
+          "american-football",
+          "americanfootball",
+          "american_football",
+          "nfl",
+          "football-american",
+          "gridiron"
+        ];
+        filtered = matches.filter(m => candidates.includes(String(m.category || "").toLowerCase()));
+      }
+
+      return filtered;
+    }
+
+    function renderMatchOptions(matches) {
+      return matches.map(m => {
+        const title = (m.title || "Untitled match");
+        const when = m.date ? new Date(m.date).toLocaleString() : "";
+        return `<option value="${escapeAttr(m.id)}">${escapeHtml(title)}${when ? " • " + escapeHtml(when) : ""}</option>`;
+      }).join("");
+    }
+
+    async function initStreamedCard(cfg) {
+    const select = document.getElementById("streamed-match-select");
+    const reloadBtn = document.getElementById("streamed-reload");
+    const sportTabs = [...document.querySelectorAll('[data-sport]')];
+
+    // default sport
+    let activeSport = localStorage.getItem("streamedSport") || "football";
+
+    function setSport(nextSport) {
+      activeSport = nextSport;
+      localStorage.setItem("streamedSport", activeSport);
+
+      sportTabs.forEach(btn => {
+        const isActive = btn.dataset.sport === activeSport;
+        btn.setAttribute("aria-selected", String(isActive));
+      });
+
+      // If we already loaded matches, refresh dropdown immediately
+      const matches = window.__streamedMatches || [];
+      if (matches.length) {
+        const filtered = getSportMatches(matches, activeSport);
+
+        select.innerHTML = filtered.length
+          ? renderMatchOptions(filtered)
+          : `<option>No ${activeSport} matches found</option>`;
+
+        select.disabled = filtered.length === 0;
+
+        // Auto-load first match in that sport
+        if (filtered.length) loadStreamsForMatchId(filtered[0].id);
+      }
+    }
+
+    // Bind sport tab clicks
+    sportTabs.forEach(btn => {
+      btn.addEventListener("click", () => setSport(btn.dataset.sport));
+    });
+
+    // Bind reload
+    reloadBtn.addEventListener("click", async () => {
+      await loadMatchesAndFirstStream(cfg, activeSport);
+    });
+
+    // Bind dropdown
+    select.addEventListener("change", async (e) => {
+      const matchId = e.target.value;
+      if (!matchId) return;
+      await loadStreamsForMatchId(matchId);
+    });
+
+    // Initialize sport UI state
+    setSport(activeSport);
+
+    // Load matches initially
+    await loadMatchesAndFirstStream(cfg, activeSport);
+  }
+
+    async function loadMatchesAndFirstStream(cfg, activeSport = "football") {
       setStreamedStatus("Loading…", "warn");
       setStreamedMeta("Match: —", "Source: —");
 
@@ -243,17 +344,23 @@
       }
 
       window.__streamedMatches = matches;
+      console.log("categories:", [...new Set(matches.map(m => m.category))]);
+      console.log("sample match:", matches[0]);
+      
 
-      select.innerHTML = matches.map(m => {
-        const title = (m.title || "Untitled match");
-        const when = m.date ? new Date(m.date).toLocaleString() : "";
-        return `<option value="${escapeAttr(m.id)}">${escapeHtml(title)}${when ? " • " + escapeHtml(when) : ""}</option>`;
-      }).join("");
+      const filtered = getSportMatches(matches, activeSport);
 
-      select.disabled = false;
-      setStreamedStatus(`Loaded ${matches.length}`, "good");
+      select.innerHTML = filtered.length
+        ? renderMatchOptions(filtered)
+        : `<option>No ${activeSport} matches found</option>`;
 
-      await loadStreamsForMatchId(matches[0].id);
+      select.disabled = filtered.length === 0;
+
+      setStreamedStatus(`Loaded ${filtered.length}/${matches.length}`, filtered.length ? "good" : "warn");
+      console.log("categories:", [...new Set(matches.map(m => m.category))].sort());
+      if (filtered.length) {
+        await loadStreamsForMatchId(filtered[0].id);
+      }
     }
 
     async function loadStreamsForMatchId(matchId) {
@@ -290,7 +397,7 @@
       const iframe = document.getElementById("streamed-player");
       iframe.dataset.src = best.embedUrl;
       iframe.src = best.embedUrl;
-      
+
       const open = document.getElementById("streamed-open");
       open.href = best.embedUrl;
 
