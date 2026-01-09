@@ -3,6 +3,7 @@
    ===================================================== */
 
 /* ---------- Theme variables ---------- */
+[hidden] { display: none !important; }
 :root {
   --bg: #0b0d12;
   --fg: #e8ebf2;
@@ -194,6 +195,9 @@ footer {
   background: var(--warn);
   box-shadow: 0 0 18px rgba(255, 201, 71, 0.25);
 }
+.dot.good { background: var(--good); box-shadow: 0 0 18px rgba(71, 255, 167, 0.20); }
+.dot.bad  { background: var(--bad);  box-shadow: 0 0 18px rgba(255, 92, 92, 0.18); }
+.dot.warn { background: var(--warn); box-shadow: 0 0 18px rgba(255, 201, 71, 0.25); }
 
 /* ---------- Misc helpers ---------- */
 .actions {

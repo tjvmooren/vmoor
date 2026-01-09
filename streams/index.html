@@ -14,16 +14,26 @@
     <header>
       <div><a class="mono" href="/"><- vmoor</a></div>
       <div><a class="mono" href="/anime.html">-> Anime</a></div>
-      <a class="btn" href="#" onclick="return false;" title="API wiring later">
-        <span class="mono">API</span>
-        <span style="color: var(--muted); font-size: 13px;">(soon)</span>
-      </a>
+
+      <div class="row">
+        <span
+          id="hubStatus"
+          class="pill mono"
+          title="Streaming Hub status (tokeo3 backend)"
+          aria-live="polite"
+        >
+          <span id="hubDot" class="dot" aria-hidden="true"></span>
+          <span id="hubText">Hub: offline</span>
+        </span>
+      </div>
     </header>
 
     <section class="hero">
       <h1>Stream Hub</h1>
-
-      <div class="panel">
+      <p class="tag mono" data-hub-offline hidden>
+        Streaming Hub is offline (tokeo3 backend is down).
+      </p>
+      <div class="panel" data-hub hidden>
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
           <h2>🚧 Under construction</h2>
           <span class="pill"><span class="dot"></span> In progress</span>
@@ -639,5 +649,6 @@
       return escapeHtml(str).replaceAll("`", "&#96;");
     }
   </script>
+  <script src="/assets/js/health-hub.js" defer></script>
 </body>
 </html>

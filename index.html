@@ -12,10 +12,6 @@
     name="description"
     content="Projects, labs, and tools by Tyler Vander Mooren."
   />
-
-  <!-- =====================================================
-       Page styles - moved to site.css
-       ===================================================== -->
   <link rel="stylesheet" href="/assets/css/site.css">
 
 </head>
@@ -31,7 +27,17 @@
         <div class="tag">Projects • Labs • Tools</div>
       </div>
 
-      <div class="tag mono">tyler v.</div>
+      <div class="row">
+      <span
+        id="hubStatus"
+        class="pill mono"
+        title="Streaming Hub status (tokeo3 backend)"
+        aria-live="polite"
+      >
+        <span id="hubDot" class="dot" aria-hidden="true"></span>
+        <span id="hubText">Hub: offline</span>
+      </span>
+    </div>
     </header>
     <!-- =====================================================
          Hero / intro section
@@ -42,7 +48,7 @@
 
       <div class="cta">
         <a class="btn" href="/sleeper"> Sleeper Dashboard</a>
-        <a class="btn" href="/streams"> Streams</a>
+        <a class="btn" href="/streams" data-hub hidden> Streams</a>
         <a class="btn" href="anime.html"> Anime </a>
         <a
           class="btn"
@@ -61,5 +67,7 @@
      <span class="mono">vmoor</span>
     </footer>
   </div>
+  <script src="assets/js/health-hub.js" defer></script>
+
 </body>
 </html>
