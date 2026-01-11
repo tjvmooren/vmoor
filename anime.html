@@ -4,14 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Anime | vmoor.com</title>
-
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="stylesheet" href="/assets/css/anime.css" />
-
   <meta name="color-scheme" content="dark light" />
 </head>
+
 <body>
-  <!-- reuse your existing site header/nav here -->
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="/"><- vmoor</a>
@@ -20,7 +18,6 @@
       </nav>
     </div>
   </header>
-
   <main>
     <section class="hero">
       <div class="wrap hero-grid">
@@ -50,7 +47,8 @@
         </div>
       </div>
     </section>
-
+    <!-- Trending Now Section 
+    -------------------------->
     <section class="wrap section" id="homeSections">
       <div class="section-head">
         <h2>Trending now</h2>
@@ -68,7 +66,8 @@
       </div>
       <div class="row" id="rowTop"></div>
     </section>
-
+        <!-- Search Results
+    -------------------------->
     <section class="wrap section hidden" id="searchSection">
       <div class="section-head">
         <h2 id="searchTitle">Search results</h2>
@@ -88,7 +87,6 @@
     <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
     <div id="modalBody" class="modal-body"></div>
   </dialog>
-
   <script src="/assets/js/anime.js" defer></script>
 </body>
 </html>

@@ -3,72 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>vmoor</title>
   <meta name="description" content="Projects, labs, and tools by Tyler Vander Mooren." />
   <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div><a class="mono" href="/"><- vmoor</a></div>
-      <div><a class="mono" href="/anime.html">-> Anime</a></div>
-
-      <div class="row">
-        <span
-          id="hubStatus"
-          class="pill mono"
-          title="Streaming Hub status (tokeo3 backend)"
-          aria-live="polite"
-        >
-          <span id="hubDot" class="dot" aria-hidden="true"></span>
-          <span id="hubText">Hub: offline</span>
-        </span>
+  <!-- STREAMS AUTH OVERLAY place right after  -->
+  <div id="authOverlay" style="
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.75);
+    z-index:9999;
+  ">
+    <div style="
+      width:min(420px,92vw);
+      background:#0b0d12;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:18px;
+      color:#e8ebf2;
+    ">
+      <div style="font-size:18px;font-weight:700;margin-bottom:6px;">
+        Streams Login
       </div>
-    </header>
-
-    <section class="hero">
-      <h1>Stream Hub</h1>
-      <p class="tag mono" data-hub-offline hidden>
-        Streaming Hub is offline (tokeo3 backend is down).
-      </p>
-      <div class="panel" data-hub hidden>
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-          <h2>🚧 Under construction</h2>
-          <span class="pill"><span class="dot"></span> In progress</span>
-        </div>
-
-        <!-- Tabs -->
-        <div class="tabs" role="tablist" aria-label="Stream tabs">
-          <button class="tab" role="tab" id="tab-twitch" aria-controls="panel-twitch" aria-selected="true" type="button">
-            Twitch <span class="tab-badge">@simonizeshow</span>
-          </button>
-          <button class="tab" role="tab" id="tab-streamed" aria-controls="panel-streamed" aria-selected="false" type="button">
-            Streamed <span class="tab-badge">Live Sports</span>
-          </button>
-        </div>
-
-        <p style="margin-top:10px;">
-          Planned: live status, title/category, viewers, and direct links.
-        </p>
-
-        <!-- Panels -->
-        <div class="grid">
-          <div id="panel-twitch" class="tab-panel" role="tabpanel" aria-labelledby="tab-twitch">
-            <div id="twitch-slot"></div>
-          </div>
-
-          <div id="panel-streamed" class="tab-panel" role="tabpanel" aria-labelledby="tab-streamed" hidden>
-            <div id="streamed-slot"></div>
-          </div>
-        </div>
+      <div style="opacity:.8;margin-bottom:12px;">
+        Enter the shared password to continue.
       </div>
-    </section>
 
-    <footer><span class="mono">vmoor</span></footer>
+      <input id="authPass" type="password" autocomplete="current-password"
+        style="
+          width:100%;
+          padding:10px 12px;
+          border-radius:10px;
+          border:1px solid rgba(255,255,255,.18);
+          background:rgba(255,255,255,.06);
+          color:#e8ebf2;
+        " />
+
+      <button id="authBtn"
+        style="
+          margin-top:12px;
+          width:100%;
+          padding:10px 12px;
+          border-radius:10px;
+          border:1px solid rgba(255,255,255,.18);
+          background:rgba(138,180,255,.18);
+          color:#e8ebf2;
+          font-weight:700;
+          cursor:pointer;
+        ">
+        Login
+      </button>
+
+      <div id="authMsg" style="margin-top:10px;color:#ffb3b3;min-height:18px;"></div>
+    </div>
   </div>
+  <div id="pageContent">
+    <div class="wrap">
+      <header>
+        <div><a class="mono" href="/"><- vmoor</a></div>
+        <div><a class="mono" href="/anime.html">-> Anime</a></div>
 
+        <div class="row">
+          <span
+            id="hubStatus"
+            class="pill mono"
+            title="Streaming Hub status (tokeo3 backend)"
+            aria-live="polite"
+          >
+            <span id="hubDot" class="dot" aria-hidden="true"></span>
+            <span id="hubText">Hub: offline</span>
+          </span>
+        </div>
+      </header>
+
+      <section class="hero">
+        <h1>Stream Hub</h1>
+        <p class="tag mono" data-hub-offline hidden>
+          Streaming Hub is offline (tokeo3 backend is down).
+        </p>
+        <div class="panel" data-hub hidden>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <h2>🚧 Under construction</h2>
+            <span class="pill"><span class="dot"></span> In progress</span>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs" role="tablist" aria-label="Stream tabs">
+            <button class="tab" role="tab" id="tab-twitch" aria-controls="panel-twitch" aria-selected="true" type="button">
+              Twitch <span class="tab-badge">@simonizeshow</span>
+            </button>
+            <button class="tab" role="tab" id="tab-streamed" aria-controls="panel-streamed" aria-selected="false" type="button">
+              Streamed <span class="tab-badge">Live Sports</span>
+            </button>
+          </div>
+
+          <p style="margin-top:10px;">
+            Planned: live status, title/category, viewers, and direct links.
+          </p>
+
+          <!-- Panels -->
+          <div class="grid">
+            <div id="panel-twitch" class="tab-panel" role="tabpanel" aria-labelledby="tab-twitch">
+              <div id="twitch-slot"></div>
+            </div>
+
+            <div id="panel-streamed" class="tab-panel" role="tabpanel" aria-labelledby="tab-streamed" hidden>
+              <div id="streamed-slot"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer><span class="mono">vmoor</span></footer>
+    </div>
+  </div>
   <script>
     // ============================
     // CONFIG
@@ -408,8 +458,6 @@
       }
     }
 
-
-
     // ============================
     // STREAMED LOGIC
     // ============================
@@ -648,7 +696,70 @@
     function escapeAttr(str) {
       return escapeHtml(str).replaceAll("`", "&#96;");
     }
+  
   </script>
   <script src="/assets/js/health-hub.js" defer></script>
+  <!-- STREAMS AUTH SCRIPT -->
+  <script>
+    const API_BASE = "https://api.vmoor.com";
+
+    async function api(path, opts = {}) {
+      const res = await fetch(API_BASE + path, {
+        ...opts,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          ...(opts.headers || {})
+        }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw data;
+      return data;
+    }
+
+    function showOverlay(show) {
+      const el = document.getElementById("authOverlay");
+      if (el) el.style.display = show ? "flex" : "none";
+    }
+
+    async function checkAuth() {
+      try {
+        const me = await api("/auth/me");
+        return me.authed === true;
+      } catch {
+        return false;
+      }
+    }
+
+    (async () => {
+      const authed = await checkAuth();
+      document.getElementById("pageContent").style.display = authed ? "" : "none";
+      showOverlay(!authed);
+
+      document.getElementById("authBtn")?.addEventListener("click", async () => {
+        const msg = document.getElementById("authMsg");
+        msg.textContent = "";
+
+        const password = document.getElementById("authPass").value;
+        try {
+          await api("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ password })
+          });
+          document.getElementById("pageContent").style.display = "";
+          showOverlay(false);
+          
+        } catch {
+          msg.textContent = "Invalid password.";
+        }
+      });
+
+      document.getElementById("authPass")?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") document.getElementById("authBtn").click();
+      });
+    })();
+  </script>
+
+
 </body>
 </html>
