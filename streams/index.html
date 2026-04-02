@@ -4,34 +4,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stream Hub | vmoor</title>
-  <meta name="description" content="Streaming experiments and embeds on vmoor.com." />
+  <meta name="description" content="Authenticated streaming experiments and embeds on vmoor.com." />
   <link rel="stylesheet" href="../assets/css/site.css" />
 </head>
-<body data-page="streams" data-root="..">
+<body data-page="streams" data-root=".." data-streams-access="locked">
   <div data-site-header></div>
 
   <main>
     <section class="hero">
-      <div class="wrap stack">
-        <div class="eyebrow">Side Build</div>
-        <h1>Stream Hub</h1>
-        <p>
-          Streaming experiments stay public here while protected security work moves into the authenticated labs area.
-        </p>
-        <p class="tag mono" data-hub-offline hidden>
-          The API is offline right now, so hub-aware status may be stale.
-        </p>
+      <div class="wrap split-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Protected Side Build</div>
+          <h1>Stream Hub now uses the same session login as the private labs area.</h1>
+          <p>
+            This page is no longer a public side route. Stream Hub access now follows the Worker session model so side
+            builds and protected lab surfaces can share one authenticated entry point.
+          </p>
 
-        <div class="row">
-          <a class="btn btn-secondary" href="../labs/index.html">Open Cybersecurity Labs</a>
-          <a class="btn btn-ghost" href="../sleeper/index.html">Open Sleeper Build</a>
+          <div class="row">
+            <span id="streamAccessBadge" class="badge warn">Access: checking</span>
+            <span id="streamAccessPill" class="pill mono">Locked</span>
+          </div>
+
+          <div id="streamAccessSummary" class="collection">
+            <article class="resource-card">
+              <div class="resource-card__meta">
+                <span class="badge warn">Locked</span>
+                <span class="badge">Session required</span>
+              </div>
+              <h3>Stream Hub is protected now.</h3>
+              <p>Sign in to reveal the stream embeds, match pickers, and future authenticated side-build content.</p>
+            </article>
+          </div>
         </div>
 
-        <div class="panel" data-hub hidden>
+        <aside class="hero-panel stack">
+          <div class="eyebrow">Protected Access</div>
+          <h2>Sign in to use Stream Hub.</h2>
+          <p>
+            Streams now sit behind the same session gate as the labs page so access follows a real account instead of a
+            public route or shared password.
+          </p>
+
+          <form id="streamAuthForm" class="input-grid">
+            <label class="field">
+              <span class="small">Username</span>
+              <input class="input" id="streamAuthIdentifier" name="identifier" type="text" autocomplete="username" required />
+            </label>
+
+            <label class="field">
+              <span class="small">Password</span>
+              <input class="input" id="streamAuthPassword" name="password" type="password" autocomplete="current-password" required />
+            </label>
+
+            <button class="btn btn-block" id="streamAuthSubmit" type="submit">Sign In</button>
+          </form>
+
+          <div class="row" id="streamAuthActions" hidden>
+            <button class="btn btn-secondary" id="streamLogoutBtn" type="button">Sign Out</button>
+            <a class="btn btn-ghost" href="../labs/index.html">Open Cybersecurity Labs</a>
+          </div>
+
+          <p id="streamAuthMessage" class="status-line small"></p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap stack">
+        <article class="panel stack" id="streamLockedNotice">
+          <div class="section-heading">
+            <div class="stack">
+              <div class="eyebrow">Locked State</div>
+              <h2>Sign in above to reveal Stream Hub.</h2>
+            </div>
+            <span class="badge warn">Awaiting session</span>
+          </div>
+
+          <p>
+            The stream surface stays hidden until the current browser session is authenticated. Once signed in, this
+            page unlocks without sending you to a separate app shell.
+          </p>
+        </article>
+
+        <article class="panel stack" id="streamAccessPanel" hidden>
           <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-            <h2>Under construction</h2>
+            <div class="stack">
+              <div class="eyebrow">Authenticated Access</div>
+              <h2>Stream Hub</h2>
+            </div>
             <span class="pill"><span class="dot"></span> In progress</span>
           </div>
+
+          <p>
+            The stream tools stay behind auth now while the rest of the portfolio remains public. This keeps the
+            experiments accessible to you without leaving them wide open.
+          </p>
+
+          <div class="row">
+            <a class="btn btn-secondary" href="../labs/index.html">Open Cybersecurity Labs</a>
+            <a class="btn btn-ghost" href="../sleeper/index.html">Open Sleeper Build</a>
+          </div>
+
+          <p class="tag mono" data-hub-offline hidden>
+            The API is offline right now, so hub-aware status may be stale.
+          </p>
 
           <div class="tabs" role="tablist" aria-label="Stream tabs">
             <button class="tab" role="tab" id="tab-twitch" aria-controls="panel-twitch" aria-selected="true" type="button">
@@ -55,7 +132,7 @@
               <div id="streamed-slot"></div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </section>
   </main>
@@ -64,6 +141,7 @@
 
   <script src="../assets/js/site-shell.js" defer></script>
   <script src="../assets/js/health-hub.js" defer></script>
+  <script src="../assets/js/streams-auth.js" defer></script>
   <script src="../assets/js/streams.js" defer></script>
 </body>
 </html>

@@ -12,15 +12,35 @@
     fallbackEndpoint: "https://streamed.pk/api/matches/all-today",
   };
 
-  document.addEventListener("DOMContentLoaded", () => {
+  let initialized = false;
+  let initializing = false;
+
+  async function initializeStreams() {
+    if (initialized || initializing) {
+      return;
+    }
+
+    initializing = true;
     document.getElementById("twitch-slot").innerHTML = renderTwitchCard(twitch);
     document.getElementById("streamed-slot").innerHTML = renderStreamedCard(streamed);
 
     initTabs();
-    initStreamedCard(streamed).catch((error) => {
+    await initStreamedCard(streamed).catch((error) => {
       setStreamedStatus("Error loading matches", "bad");
       console.error(error);
     });
+    initialized = true;
+    initializing = false;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (document.body?.dataset?.streamsAccess === "granted") {
+      void initializeStreams();
+    }
+  });
+
+  window.addEventListener("vmoor:streams-access", () => {
+    void initializeStreams();
   });
 
   function stopIframes(panel) {
