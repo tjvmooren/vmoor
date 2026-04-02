@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Labs | vmoor</title>
+  <meta
+    name="description"
+    content="Cybersecurity labs, protected lab access, and public security notes on vmoor.com."
+  />
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body data-page="labs" data-root="..">
+  <div data-site-header></div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap split-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Cybersecurity Labs</div>
+          <h1>Public lab tracks up front. Protected security work behind authenticated sessions.</h1>
+          <p>
+            This page is the bridge between the public-facing portfolio and the protected lab environment that will
+            eventually move onto PostgreSQL-backed users and broader gated content.
+          </p>
+
+          <div class="cta">
+            <a class="btn" href="#labAccess">Sign In</a>
+            <a class="btn btn-secondary" href="#catalog">View Lab Catalog</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel stack">
+          <div class="eyebrow">Current Architecture</div>
+          <h2>Session auth is live. Shared-password gates are gone.</h2>
+          <ul class="signal-list">
+            <li>Protected lab routes now rely on per-user session auth instead of a single shared password.</li>
+            <li>The frontend can query auth state and render locked or unlocked lab content without a separate app shell.</li>
+            <li>The user store is structured to swap from bootstrap accounts to PostgreSQL-backed identities next.</li>
+          </ul>
+
+          <div class="row">
+            <span id="labAuthBadge" class="badge warn">Auth: checking</span>
+            <span class="badge">Protected labs staged for expansion</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="catalog">
+      <div class="wrap feature-grid">
+        <article class="feature-card stack">
+          <div class="section-heading">
+            <div class="stack">
+              <div class="eyebrow">Public Catalog</div>
+              <h2>Visible lab tracks</h2>
+            </div>
+            <span id="catalogBadge" class="pill mono">Loading catalog</span>
+          </div>
+
+          <div id="publicLabs" class="collection">
+            <p>Loading public lab inventory.</p>
+          </div>
+        </article>
+
+        <article class="feature-card stack" id="labAccess">
+          <div class="section-heading">
+            <div class="stack">
+              <div class="eyebrow">Protected Access</div>
+              <h2>Authenticated lab entry</h2>
+            </div>
+            <span id="authStatePill" class="pill mono">Locked</span>
+          </div>
+
+          <p>Sign in with your lab account to unlock protected notes, route previews, and future gated content.</p>
+
+          <form id="authForm" class="input-grid">
+            <label class="field">
+              <span class="small">Username</span>
+              <input class="input" id="authIdentifier" name="identifier" type="text" autocomplete="username" required />
+            </label>
+
+            <label class="field">
+              <span class="small">Password</span>
+              <input class="input" id="authPassword" name="password" type="password" autocomplete="current-password" required />
+            </label>
+
+            <button class="btn btn-block" id="authSubmit" type="submit">Sign In</button>
+          </form>
+
+          <div class="row" id="authActions" hidden>
+            <button class="btn btn-secondary" id="logoutBtn" type="button">Sign Out</button>
+          </div>
+
+          <p id="authMessage" class="status-line small"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap split-grid">
+        <article class="panel stack">
+          <div class="section-heading">
+            <div class="stack">
+              <div class="eyebrow">Protected Overview</div>
+              <h2>Authenticated lab status</h2>
+            </div>
+            <span id="privateOverviewBadge" class="badge warn">Locked</span>
+          </div>
+
+          <div id="privateLabSummary" class="collection">
+            <p>Sign in to load protected lab overview data from the API.</p>
+          </div>
+        </article>
+
+        <article class="panel stack">
+          <div class="section-heading">
+            <div class="stack">
+              <div class="eyebrow">Protected Resources</div>
+              <h2>Private lab surfaces</h2>
+            </div>
+            <span id="privateResourcesBadge" class="badge warn">Awaiting auth</span>
+          </div>
+
+          <div id="privateLabList" class="card-grid">
+            <article class="resource-card">
+              <div class="resource-card__meta">
+                <span class="badge warn">Locked</span>
+              </div>
+              <h3>Private labs are hidden until you authenticate.</h3>
+              <p>The route structure is in place, but this panel only unlocks once the API session is active.</p>
+            </article>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script src="../assets/js/site-shell.js" defer></script>
+  <script src="../assets/js/health-hub.js" defer></script>
+  <script src="../assets/js/labs-auth.js" defer></script>
+</body>
+</html>
