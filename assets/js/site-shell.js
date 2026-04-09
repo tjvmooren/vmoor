@@ -58,7 +58,7 @@
     <footer class="site-footer">
       <div class="wrap site-footer__inner">
         <div class="stack">
-          <div class="brand-title">Tyler Vander Mooren</div>
+          <div class="brand-title">TJ V</div>
           <div class="small">
             Defensive security work, authenticated labs, and side projects built from the same home base.
           </div>
