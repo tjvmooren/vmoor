@@ -1,5 +1,0 @@
-admin123: $2b$10$gy6PmUA1UMHLfiALQYk7J.T4OT4Cg09oOIHzyytKnK5jb2d75gr42
-admin@test.com
-
-employee@test.com
-employee123: $2b$10$InmMarMZLgyQS2Jnt2005eAy0i.ijoMqYYXVUbmegKGG1juRiKL4m
