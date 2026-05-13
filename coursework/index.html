@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coursework Archive | vmoor</title>
+  <meta
+    name="description"
+    content="Public coursework archive organized by semester and course, with reports on-site and code projects linked out."
+  />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+</head>
+<body data-page="coursework" data-root="..">
+  <div data-site-header></div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap split-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Coursework Archive</div>
+          <h1>Reports, papers, screenshots, and public coursework organized like a library instead of a dump.</h1>
+          <p>
+            This archive is built from the local coursework tree and organized by semester and course. Public documents
+            are hosted directly on the site, while code-heavy projects are meant to link out to GitHub as they are
+            cleaned up and published.
+          </p>
+
+          <div class="cta">
+            <a class="btn" href="#archiveCatalog">Open Archive</a>
+            <a class="btn btn-secondary" href="https://github.com/tjvmooren?tab=repositories" target="_blank" rel="noopener">View GitHub</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel stack">
+          <div class="eyebrow">Publication Rules</div>
+          <h2>Documents live here. Source code gets linked out. Private material stays out.</h2>
+          <ul class="signal-list">
+            <li>Reports, papers, research briefs, screenshots, and course writeups are hosted directly on the site.</li>
+            <li>Code projects are cataloged here, but the public destination should be GitHub rather than raw source copies.</li>
+            <li>Original `.docx` files stay as source where needed, but PDF and browser-friendly formats are preferred.</li>
+            <li>Textbooks, syllabi, instructor materials, private keys, tokens, passwords, and bulky lab dumps are excluded.</li>
+          </ul>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <span id="courseworkBuildBadge" class="badge warn">Archive: loading</span>
+            <span class="badge">Semester and course grouped</span>
+          </div>
+
+          <p class="small">
+            The coursework manifest is generated from the local archive and copied into the site so links stay stable
+            after deployment.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div id="courseworkSummary" class="stat-grid">
+          <article class="stat-card">
+            <div class="eyebrow">Archive</div>
+            <strong>Loading</strong>
+            <p>Inspecting semesters, courses, and published items.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="archiveCatalog">
+      <div class="wrap archive-layout">
+        <article class="panel stack archive-toolbar">
+          <div class="section-heading">
+            <div class="stack">
+              <div class="eyebrow">Archive Browser</div>
+              <h2>Browse the coursework library by semester, course, and content type.</h2>
+            </div>
+            <span id="courseworkStatus" class="pill mono">Manifest: loading</span>
+          </div>
+
+          <label class="field">
+            <span class="small">Search archive</span>
+            <div class="search">
+              <input
+                id="courseworkSearch"
+                type="search"
+                placeholder="Search by title, course, semester, or keyword"
+                autocomplete="off"
+              />
+            </div>
+          </label>
+
+          <div class="stack">
+            <div class="small">Semester</div>
+            <div id="semesterChips" class="chips"></div>
+          </div>
+
+          <div class="stack">
+            <div class="small">Track</div>
+            <div id="domainChips" class="chips"></div>
+          </div>
+
+          <div class="stack">
+            <div class="small">View</div>
+            <div id="modeChips" class="chips"></div>
+          </div>
+        </article>
+
+        <div class="archive-results">
+          <div id="courseworkCatalog" class="collection">
+            <article class="resource-card">
+              <div class="resource-card__meta">
+                <span class="badge warn">Loading</span>
+              </div>
+              <h3>Building archive view.</h3>
+              <p>The manifest and public file map are still loading.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="courseworkPreview" class="modal archive-preview" aria-labelledby="courseworkPreviewTitle">
+    <button class="btn btn-small btn-ghost modal-close" type="button" data-preview-close>Close</button>
+
+    <div class="modal-body archive-preview__body">
+      <div class="section-heading archive-preview__header">
+        <div class="stack">
+          <div class="eyebrow">Document Preview</div>
+          <h2 id="courseworkPreviewTitle">Preparing preview</h2>
+          <p id="courseworkPreviewPath" class="small mono"></p>
+        </div>
+
+        <div id="courseworkPreviewMeta" class="row"></div>
+      </div>
+
+      <p id="courseworkPreviewStatus" class="small">Loading preview content.</p>
+
+      <div id="courseworkPreviewFrame" class="archive-preview__frame-wrap">
+        <article class="resource-card archive-preview__placeholder">
+          <div class="resource-card__meta">
+            <span class="badge warn">Loading</span>
+          </div>
+          <h3>Preparing preview.</h3>
+          <p>The file preview will appear here when it is ready.</p>
+        </article>
+      </div>
+
+      <div id="courseworkPreviewActions" class="row"></div>
+    </div>
+  </dialog>
+
+  <div data-site-footer></div>
+
+  <script src="../assets/js/site-shell.js" defer></script>
+  <script src="../assets/js/health-hub.js" defer></script>
+  <script src="../assets/js/coursework.js" defer></script>
+</body>
+</html>

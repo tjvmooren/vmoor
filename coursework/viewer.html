@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coursework Reader | vmoor</title>
+  <meta
+    name="description"
+    content="Read coursework documents in a browser-first view before downloading the original file."
+  />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script src="https://unpkg.com/mammoth@1.12.0/mammoth.browser.min.js" defer></script>
+  <script src="../assets/js/coursework-viewer.js" defer></script>
+</head>
+<body class="coursework-viewer-page">
+  <main class="section">
+    <div class="wrap stack">
+      <div class="row" data-embed-hidden>
+        <a class="btn btn-small btn-ghost" href="./index.html">Back to archive</a>
+      </div>
+
+      <article class="panel stack reader-shell">
+        <div class="section-heading reader-shell__header">
+          <div class="stack">
+            <div class="eyebrow">Coursework Reader</div>
+            <h1 id="viewerTitle">Loading document</h1>
+            <p id="viewerPath" class="small mono"></p>
+          </div>
+
+          <div id="viewerMeta" class="row"></div>
+        </div>
+
+        <p id="viewerStatus" class="small">Loading file.</p>
+        <div id="viewerActions" class="row" data-embed-hidden></div>
+
+        <div id="viewerContent" class="reader-panel">
+          <article class="resource-card reader-placeholder">
+            <div class="resource-card__meta">
+              <span class="badge warn">Loading</span>
+            </div>
+            <h2>Preparing document.</h2>
+            <p>The browser-friendly reader is loading the selected coursework item.</p>
+          </article>
+        </div>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

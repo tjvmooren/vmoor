@@ -8,6 +8,7 @@
 
   const navItems = [
     { key: "home", href: rel("index.html"), label: "Overview" },
+    { key: "coursework", href: rel("coursework/index.html"), label: "Coursework" },
     { key: "labs", href: rel("labs/index.html"), label: "Cyber Labs" },
     { key: "sleeper", href: rel("sleeper/index.html"), label: "Sleeper" },
     { key: "streams", href: rel("streams/index.html"), label: "Streams" },
@@ -32,7 +33,7 @@
       <div class="wrap site-header__inner">
         <a class="brand-lockup" href="${rel("index.html")}">
           <span class="brand-title">vmoor.com</span>
-          <span class="brand-subtitle mono">Cybersecurity portfolio, labs, and working builds</span>
+          <span class="brand-subtitle mono">Coursework archive, labs, and working builds</span>
         </a>
 
         <nav class="site-nav" aria-label="Primary">
@@ -60,11 +61,12 @@
         <div class="stack">
           <div class="brand-title">TJ V</div>
           <div class="small">
-            Defensive security work, authenticated labs, and side projects built from the same home base.
+            Coursework archive, defensive security work, authenticated labs, and side builds from the same home base.
           </div>
         </div>
 
         <div class="footer-links">
+          <a href="${rel("coursework/index.html")}">Coursework</a>
           <a href="${rel("labs/index.html")}">Labs</a>
           <a href="${rel("sleeper/index.html")}">Sleeper</a>
           <a href="${rel("streams/index.html")}">Streams</a>

@@ -1,0 +1,24 @@
+For example, you can place a handler into the main function that tells the user
+that something has gone very wrong and offers a chance to try again with different
+inputs.
+int main()
+{
+bool more = true;
+while (more)
+{
+try
+	{
+	code
+	}
+	catch (logic_error& e)
+	{
+	cout << "A logic error has occurred: " << e.what() 
+	<< "\n"
+	<< "Retry? (y/n)";
+	string input;
+	getline(cin, input);
+	if (input == "n") more = false;
+
+}
+}
+}
