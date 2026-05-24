@@ -228,6 +228,25 @@ function parseSemester(name) {
   };
 }
 
+function buildCourseRecord(courseName, semesterMeta) {
+  const domain = inferCourseDomain(courseName);
+  return {
+    key: normalizeKey(courseName),
+    label: courseName,
+    domain: domain.key,
+    domainLabel: domain.label,
+    semesterKey: semesterMeta.key,
+    semesterLabel: semesterMeta.label,
+    searchText: [
+      courseName,
+      semesterMeta.label,
+      domain.label,
+    ].join(" "),
+    items: [],
+    projects: [],
+  };
+}
+
 function sortSemestersDescending(a, b) {
   const order = {
     spring: 1,
@@ -372,13 +391,14 @@ async function loadProjectLinks() {
     const raw = await fs.readFile(projectLinksPath, "utf8");
     const parsed = JSON.parse(raw);
     const defaults = parsed && typeof parsed.__defaults === "object" ? parsed.__defaults : {};
+    const manualProjects = Array.isArray(parsed?.__manualProjects) ? parsed.__manualProjects : [];
     const entries = Object.fromEntries(
-      Object.entries(parsed || {}).filter(([key]) => key !== "__defaults")
+      Object.entries(parsed || {}).filter(([key]) => key !== "__defaults" && key !== "__manualProjects")
     );
 
-    return { defaults, entries };
+    return { defaults, entries, manualProjects };
   } catch {
-    return { defaults: {}, entries: {} };
+    return { defaults: {}, entries: {}, manualProjects: [] };
   }
 }
 
@@ -845,6 +865,66 @@ async function buildManifest() {
       courses: courses.sort((a, b) => a.label.localeCompare(b.label)),
     });
   }
+
+  for (const manualProject of projectLinks.manualProjects || []) {
+    const semesterMeta = parseSemester(manualProject.semesterName);
+    let semesterRecord = semesters.find((semester) => semester.key === semesterMeta.key);
+
+    if (!semesterRecord) {
+      semesterRecord = {
+        ...semesterMeta,
+        courses: [],
+      };
+      semesters.push(semesterRecord);
+    }
+
+    let courseRecord = semesterRecord.courses.find(
+      (course) => course.key === normalizeKey(manualProject.courseName)
+    );
+
+    if (!courseRecord) {
+      courseRecord = buildCourseRecord(manualProject.courseName, semesterMeta);
+      semesterRecord.courses.push(courseRecord);
+      stats.courseCount += 1;
+    }
+
+    const relPath = manualProject.relPath || ".";
+    const githubUrl =
+      manualProject.githubUrl ||
+      buildGithubTreeUrl(projectLinks.defaults?.githubBaseUrl, manualProject.repoPath) ||
+      null;
+
+    courseRecord.projects.push({
+      id: digest([
+        semesterRecord.key,
+        courseRecord.key,
+        relPath,
+        manualProject.title,
+      ].join("/")),
+      title: manualProject.title || humanize(relPath),
+      relPath,
+      summary: manualProject.summary || "Manual project entry.",
+      githubUrl,
+      githubLabel: githubUrl ? "Open GitHub" : "GitHub link pending",
+      stack: Array.isArray(manualProject.stack) ? manualProject.stack : [],
+      languages: Array.isArray(manualProject.languages) ? manualProject.languages : [],
+      searchText: [
+        manualProject.title || relPath,
+        courseRecord.label,
+        semesterRecord.label,
+        manualProject.summary || "",
+        Array.isArray(manualProject.stack) ? manualProject.stack.join(" ") : "",
+        Array.isArray(manualProject.languages) ? manualProject.languages.join(" ") : "",
+      ].join(" "),
+    });
+
+    courseRecord.projects.sort((a, b) => a.title.localeCompare(b.title));
+    stats.projectCount += 1;
+  }
+
+  semesters.forEach((semester) => {
+    semester.courses.sort((a, b) => a.label.localeCompare(b.label));
+  });
 
   semesters.sort(sortSemestersDescending);
   stats.semesterCount = semesters.length;

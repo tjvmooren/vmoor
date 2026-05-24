@@ -2,6 +2,26 @@
   "__defaults": {
     "githubBaseUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU"
   },
+  "__manualProjects": [
+    {
+      "semesterName": "summer2025",
+      "courseName": "cs312",
+      "title": "EDMS",
+      "relPath": "edms",
+      "summary": "Employee Database Management System project built for CS312 and maintained in its own GitHub repository.",
+      "githubUrl": "https://github.com/tjv55/Project_Group_tjv55_edms",
+      "stack": [
+        "PostgreSQL",
+        "Express",
+        "React",
+        "Node.js"
+      ],
+      "languages": [
+        "JavaScript",
+        "SQL"
+      ]
+    }
+  ],
   "spring-2026/cyb499/Project/cyb499_project": {
     "summary": "Windows event-log dataset construction and model evaluation workflow built for CYB499."
   },
