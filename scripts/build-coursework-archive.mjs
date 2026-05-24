@@ -124,6 +124,39 @@ const publishNoisePathPattern = /(^|\\)(client|server|public|src|tests?)(\\|$)/i
 const codeOnlyNamePattern = /^(codex|readme|package(-lock)?|requirements|pnpm-lock|yarn-lock|composer|tsconfig|vite\.config|next\.config|\.gitignore)$/i;
 const genericTitlePattern = /^(discussion|reflection|notes?|assignment|project|paper|final|report|essay|brief|screenshot\d*|ss\d*|step[\d.]*|homework[\d.-]*|lab responses?)$/i;
 const maxPublicFileBytes = 25 * 1024 * 1024;
+const manualExcludedPublicPaths = new Set([
+  "fall-2024/cyb126/Seacord_-_Ch1_Running_with_scissors.pdf",
+  "fall-2025/ccj385/Deeper Dive 3 Instructions.pdf",
+  "fall-2025/ccj385/Deeper Dive Assignment 1 Fall25.pdf",
+  "fall-2025/ccj385/Exam2_CCJ385_Q1_Tvandermooren.docx",
+  "fall-2025/ccj385/Exam2_CCJ385_Q2_Tvandermooren.docx",
+  "fall-2025/ccj385/Exam2_CCJ385_Q3_Tvandermooren.docx",
+  "fall-2025/ccj385/Exam2_CCJ385_Q4_Tvandermooren.docx",
+  "fall-2025/ccj385/Exam2_CCJ385_Q5_Tvandermooren.docx",
+  "fall-2025/ccj385/Reflection 1 fall 2025.pdf",
+  "fall-2025/ccj385/Reflection 2 fall 2025 - Google Docs.pdf",
+  "fall-2025/ccj385/Reflection2_Tvandermooren_CCJ385.docx",
+  "fall-2025/cyb404/Assignment2/Wireshark_Intro_v8.0-1.pdf",
+  "fall-2025/egr333/1-Geremew.pdf",
+  "fall-2025/egr333/EGR_333W_tjv55_coverletter.pdf",
+  "fall-2025/egr333/EGR_333w_tvandermooren_tjv55_resume.pdf",
+  "fall-2025/egr333/Literature Review assignment.pdf",
+  "fall-2025/egr333/Privacy Paper assignment.pdf",
+  "fall-2025/egr333/Resume assignment-1.pdf",
+  "fall-2025/egr333/Tech Essay-1.pdf",
+  "fall-2025/egr333/Video short Fall 2023.pdf",
+  "fall-2025/egr333/case study/Memorandum Format.docx",
+  "fall-2025/egr333/tvandermoorenResumeGeneral.pdf",
+  "summer-2025/cs312/proj2/api key.docx",
+  "summer-2025/cs312/proj4take2/planning.docx",
+  "summer-2025/cs312/proj5/Testercodes/tester.txt",
+].map((value) => value.toLowerCase()));
+const publicPathOverrides = new Map([
+  [
+    "summer-2025/cs312/proj5/phase1/CS-312-Project-Phase-1-employeeDB_tjv55.pdf",
+    "summer-2025/cs312/proj5/CS-312-Project-Phase-1-employeeDB_tjv55.pdf",
+  ],
+].map(([from, to]) => [from.toLowerCase(), to]));
 
 function normalizeKey(value) {
   return String(value || "")
@@ -140,6 +173,10 @@ function sanitizeSegment(value) {
     .trim();
 
   return normalized || "item";
+}
+
+function normalizePublicPath(value) {
+  return String(value || "").split(path.sep).join("/").toLowerCase();
 }
 
 function humanize(value) {
@@ -234,6 +271,15 @@ function buildPublicRelativePath(semesterKey, courseKey, relativeCoursePath) {
 
 function buildPublicHref(relativePath) {
   return `./files/${relativePath.split(path.sep).join("/")}`;
+}
+
+function isManuallyExcludedPublicPath(relativePath) {
+  return manualExcludedPublicPaths.has(normalizePublicPath(relativePath));
+}
+
+function resolvePublicRelativePath(relativePath) {
+  const normalized = normalizePublicPath(relativePath);
+  return publicPathOverrides.get(normalized) || relativePath;
 }
 
 function buildItemTitle(relativeCoursePath) {
@@ -381,8 +427,9 @@ async function detectProjectDirectories(courseAbsolutePath, relativePrefix = "",
   const directCodeFileCount = visibleFiles.filter((entry) => isCodeExtension(path.extname(entry.name).toLowerCase())).length;
   const hasMarker = lowerFileNames.some((name) => projectMarkerFiles.has(name));
   const hasStaticProjectShape = lowerFileNames.includes("index.html") && directCodeFileCount >= 3;
+  const hasCodeCollectionShape = directCodeFileCount >= 3;
 
-  if ((hasMarker && (directCodeFileCount > 0 || visibleDirectories.length > 0)) || hasStaticProjectShape) {
+  if ((hasMarker && (directCodeFileCount > 0 || visibleDirectories.length > 0)) || hasStaticProjectShape || hasCodeCollectionShape) {
     results.push({
       absolutePath: courseAbsolutePath,
       relativePath: relativePrefix,
@@ -451,8 +498,24 @@ function inferProjectStack(fileNames, codeFiles) {
     stack.add("Python");
   }
 
+  if (codeFiles.some((file) => file.extension === ".py")) {
+    stack.add("Python");
+  }
+
   if (codeFiles.some((file) => file.extension === ".sql")) {
     stack.add("SQL");
+  }
+
+  if (codeFiles.some((file) => file.extension === ".c")) {
+    stack.add("C");
+  }
+
+  if (codeFiles.some((file) => file.extension === ".cpp" || file.extension === ".cc" || file.extension === ".hpp" || file.extension === ".h")) {
+    stack.add("C++");
+  }
+
+  if (codeFiles.some((file) => file.extension === ".java")) {
+    stack.add("Java");
   }
 
   if (codeFiles.some((file) => file.extension === ".html")) {
@@ -484,6 +547,25 @@ function summarizeLanguages(codeFiles) {
     .map(([label, count]) => `${label} (${count})`);
 }
 
+function fallbackStackFromLanguages(languages) {
+  const stack = new Set();
+
+  for (const entry of languages || []) {
+    const label = String(entry || "").split(" ")[0].toUpperCase();
+
+    if (label === "PY") stack.add("Python");
+    if (label === "C") stack.add("C");
+    if (label === "SQL") stack.add("SQL");
+    if (label === "JAVA") stack.add("Java");
+    if (label === "HTML") stack.add("HTML");
+    if (label === "CSS") stack.add("CSS");
+    if (label === "TS") stack.add("TypeScript");
+    if (label === "JS") stack.add("JavaScript");
+  }
+
+  return Array.from(stack);
+}
+
 async function buildProjects(semesterKey, courseKey, courseAbsolutePath, projectLinks) {
   const candidateDirectories = await detectProjectDirectories(courseAbsolutePath);
   const projects = [];
@@ -510,6 +592,9 @@ async function buildProjects(semesterKey, courseKey, courseAbsolutePath, project
     const key = `${semesterKey}/${courseKey}/${projectRelativePath.split(path.sep).join("/")}`;
     const linkConfig = projectLinks[key];
     const githubUrl = extractGithubUrl(readmeText) || linkConfig?.githubUrl || null;
+    const languages = summarizeLanguages(codeFiles);
+    const inferredStack = inferProjectStack(fileNames, codeFiles);
+    const stack = inferredStack.length ? inferredStack : fallbackStackFromLanguages(languages);
 
     projects.push({
       id: digest(key),
@@ -518,13 +603,14 @@ async function buildProjects(semesterKey, courseKey, courseAbsolutePath, project
       summary: linkConfig?.summary || parseReadmeSummary(readmeText) || "Code project discovered in the coursework tree.",
       githubUrl,
       githubLabel: githubUrl ? "Open GitHub" : "GitHub link pending",
-      stack: inferProjectStack(fileNames, codeFiles),
-      languages: summarizeLanguages(codeFiles),
+      stack,
+      languages,
       searchText: [
         humanize(path.basename(projectAbsolutePath)),
         projectRelativePath,
         parseReadmeSummary(readmeText),
-        inferProjectStack(fileNames, codeFiles).join(" "),
+        stack.join(" "),
+        languages.join(" "),
       ].join(" "),
     });
   }
@@ -581,7 +667,13 @@ async function buildCourseItems(semesterKey, courseKey, courseAbsolutePath, doma
       continue;
     }
 
-    const publicRelativePath = buildPublicRelativePath(semesterKey, courseKey, file.relativePath);
+    const rawPublicRelativePath = buildPublicRelativePath(semesterKey, courseKey, file.relativePath);
+    if (isManuallyExcludedPublicPath(rawPublicRelativePath)) {
+      stats.excludedFileCount += 1;
+      continue;
+    }
+
+    const publicRelativePath = resolvePublicRelativePath(rawPublicRelativePath);
     const href = buildPublicHref(publicRelativePath);
     const titleBits = buildItemTitle(file.relativePath);
     const kind = inferItemKind(file.relativePath, file.extension);
