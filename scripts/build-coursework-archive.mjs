@@ -370,10 +370,31 @@ async function ensureDirectory(targetPath) {
 async function loadProjectLinks() {
   try {
     const raw = await fs.readFile(projectLinksPath, "utf8");
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    const defaults = parsed && typeof parsed.__defaults === "object" ? parsed.__defaults : {};
+    const entries = Object.fromEntries(
+      Object.entries(parsed || {}).filter(([key]) => key !== "__defaults")
+    );
+
+    return { defaults, entries };
   } catch {
-    return {};
+    return { defaults: {}, entries: {} };
   }
+}
+
+function trimSlashes(value) {
+  return String(value || "").replace(/^\/+|\/+$/g, "");
+}
+
+function buildGithubTreeUrl(baseUrl, repoPath) {
+  const cleanBase = trimSlashes(baseUrl);
+  const cleanPath = trimSlashes(String(repoPath || "").split(path.sep).join("/"));
+
+  if (!cleanBase || !cleanPath) {
+    return null;
+  }
+
+  return `${cleanBase}/${cleanPath}`;
 }
 
 async function readDirectorySafe(targetPath) {
@@ -590,8 +611,13 @@ async function buildProjects(semesterKey, courseKey, courseAbsolutePath, project
     }
 
     const key = `${semesterKey}/${courseKey}/${projectRelativePath.split(path.sep).join("/")}`;
-    const linkConfig = projectLinks[key];
-    const githubUrl = extractGithubUrl(readmeText) || linkConfig?.githubUrl || null;
+    const linkConfig = projectLinks.entries[key];
+    const sourceRelativePath = path.relative(sourceRoot, projectAbsolutePath).split(path.sep).join("/");
+    const githubUrl =
+      extractGithubUrl(readmeText) ||
+      linkConfig?.githubUrl ||
+      buildGithubTreeUrl(projectLinks.defaults?.githubBaseUrl, linkConfig?.repoPath || sourceRelativePath) ||
+      null;
     const languages = summarizeLanguages(codeFiles);
     const inferredStack = inferProjectStack(fileNames, codeFiles);
     const stack = inferredStack.length ? inferredStack : fallbackStackFromLanguages(languages);

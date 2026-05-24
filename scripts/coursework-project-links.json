@@ -1,1 +1,20 @@
-{}
+{
+  "__defaults": {
+    "githubBaseUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU"
+  },
+  "spring-2026/cyb499/Project/cyb499_project": {
+    "summary": "Windows event-log dataset construction and model evaluation workflow built for CYB499."
+  },
+  "fall-2025/cs345/.": {
+    "summary": "SQL coursework and relational query practice collected under CS345."
+  },
+  "fall-2025/cyb402/.": {
+    "summary": "Python crypto exercises and supporting scripts from CYB402."
+  },
+  "fall-2025/cyb404/.": {
+    "summary": "Security lab scripts for scanning, brute-force, ciphers, and remote access experiments from CYB404."
+  },
+  "fall-2024/cyb126/.": {
+    "summary": "Introductory C programming assignments and problem-solving exercises from CYB126."
+  }
+}

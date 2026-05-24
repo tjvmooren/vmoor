@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-24T21:13:58.928Z",
+  "generatedAt": "2026-05-24T21:59:22.274Z",
   "sourceRoot": "C:\\Users\\tyler\\Desktop\\vmoor\\coursework\\NAU\\NAU",
   "stats": {
-    "semesterCount": 5,
-    "courseCount": 13,
-    "itemCount": 44,
+    "semesterCount": 4,
+    "courseCount": 12,
+    "itemCount": 39,
     "projectCount": 5,
-    "publishedFileCount": 46,
-    "excludedFileCount": 96
+    "publishedFileCount": 39,
+    "excludedFileCount": 40
   },
   "semesters": [
     {
@@ -41,24 +41,6 @@
                 "Cybersecurity"
               ],
               "searchText": "CYB 310 Lab5 Tvandermooren week11 week11\\CYB 310_Lab5_Tvandermooren.pdf Cybersecurity",
-              "secondaryLinks": []
-            },
-            {
-              "id": "d38b113061",
-              "title": "CYB310 Lab1 TylerVandermooren",
-              "kind": "assignment",
-              "kindLabel": "Assignment",
-              "family": "document",
-              "format": "docx",
-              "formatLabel": "DOCX",
-              "href": "./files/spring-2026/cyb310/week3/CYB310_Lab1_TylerVandermooren.docx",
-              "primaryLinkLabel": "Download DOCX",
-              "sourceRelativePath": "week3 / CYB310_Lab1_TylerVandermooren.docx",
-              "contextLabel": "week3",
-              "tags": [
-                "Cybersecurity"
-              ],
-              "searchText": "CYB310 Lab1 TylerVandermooren week3 week3\\CYB310_Lab1_TylerVandermooren.docx Cybersecurity",
               "secondaryLinks": []
             },
             {
@@ -379,9 +361,9 @@
               "id": "5f9a92a803",
               "title": "cyb499 project",
               "relPath": "Project/cyb499_project",
-              "summary": "Code project discovered in the coursework tree.",
-              "githubUrl": null,
-              "githubLabel": "GitHub link pending",
+              "summary": "Windows event-log dataset construction and model evaluation workflow built for CYB499.",
+              "githubUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU/spring2026/cyb499/Project/cyb499_project",
+              "githubLabel": "Open GitHub",
               "stack": [
                 "Python"
               ],
@@ -402,21 +384,21 @@
           "searchText": "itc413 Spring 2026 Computing and software",
           "items": [
             {
-              "id": "e815eadea5",
+              "id": "40e61db536",
               "title": "ITC413 Assignment2 tylervandermooren",
               "kind": "assignment",
               "kindLabel": "Assignment",
               "family": "document",
-              "format": "docx",
-              "formatLabel": "DOCX",
-              "href": "./files/spring-2026/itc413/ITC413_Assignment2_tylervandermooren.docx",
-              "primaryLinkLabel": "Download DOCX",
-              "sourceRelativePath": "ITC413_Assignment2_tylervandermooren.docx",
+              "format": "pdf",
+              "formatLabel": "PDF",
+              "href": "./files/spring-2026/itc413/ITC413_Assignment2_tylervandermooren.pdf",
+              "primaryLinkLabel": "Open PDF",
+              "sourceRelativePath": "ITC413_Assignment2_tylervandermooren.pdf",
               "contextLabel": ".",
               "tags": [
                 "Computing and software"
               ],
-              "searchText": "ITC413 Assignment2 tylervandermooren . ITC413_Assignment2_tylervandermooren.docx Computing and software",
+              "searchText": "ITC413 Assignment2 tylervandermooren . ITC413_Assignment2_tylervandermooren.pdf Computing and software",
               "secondaryLinks": []
             },
             {
@@ -480,18 +462,16 @@
               "id": "8ddd0b681f",
               "title": "CS345",
               "relPath": ".",
-              "summary": "Code project discovered in the coursework tree.",
-              "githubUrl": null,
-              "githubLabel": "GitHub link pending",
+              "summary": "SQL coursework and relational query practice collected under CS345.",
+              "githubUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU/Fall2025/CS345",
+              "githubLabel": "Open GitHub",
               "stack": [
-                "Python",
                 "SQL"
               ],
               "languages": [
-                "PY (8)",
                 "SQL (4)"
               ],
-              "searchText": "CS345 .  Python SQL PY (8) SQL (4)"
+              "searchText": "CS345 .  SQL SQL (4)"
             }
           ]
         },
@@ -595,53 +575,59 @@
               "secondaryLinks": []
             },
             {
-              "id": "fec85123ae",
+              "id": "81df9866a1",
               "title": "CYB402 HW6 DHandDLP tjv55",
-              "kind": "assignment",
-              "kindLabel": "Assignment",
+              "kind": "document",
+              "kindLabel": "Document",
               "family": "document",
               "format": "pdf",
               "formatLabel": "PDF",
-              "href": "./files/fall-2025/cyb402/DHhomework/CYB402_HW6_DHandDLP_tjv55.pdf",
+              "href": "./files/fall-2025/cyb402/CYB402_HW6_DHandDLP_tjv55.pdf",
               "primaryLinkLabel": "Open PDF",
-              "sourceRelativePath": "DHhomework / CYB402_HW6_DHandDLP_tjv55.pdf",
-              "contextLabel": "DHhomework",
+              "sourceRelativePath": "CYB402_HW6_DHandDLP_tjv55.pdf",
+              "contextLabel": ".",
               "tags": [
                 "Cybersecurity"
               ],
-              "searchText": "CYB402 HW6 DHandDLP tjv55 DHhomework DHhomework\\CYB402_HW6_DHandDLP_tjv55.pdf Cybersecurity",
-              "secondaryLinks": [
-                {
-                  "label": "Download DOCX",
-                  "href": "./files/fall-2025/cyb402/DHhomework/CYB402_HW6_DHandDLP_tjv55.docx"
-                }
-              ]
+              "searchText": "CYB402 HW6 DHandDLP tjv55 . CYB402_HW6_DHandDLP_tjv55.pdf Cybersecurity",
+              "secondaryLinks": []
             },
             {
-              "id": "e30fbd0d9d",
+              "id": "856f66f19b",
               "title": "CYB402 HW7 ECC tjv55",
               "kind": "document",
               "kindLabel": "Document",
               "family": "document",
               "format": "pdf",
               "formatLabel": "PDF",
-              "href": "./files/fall-2025/cyb402/ECC/CYB402_HW7_ECC_tjv55.pdf",
+              "href": "./files/fall-2025/cyb402/CYB402_HW7_ECC_tjv55.pdf",
               "primaryLinkLabel": "Open PDF",
-              "sourceRelativePath": "ECC / CYB402_HW7_ECC_tjv55.pdf",
-              "contextLabel": "ECC",
+              "sourceRelativePath": "CYB402_HW7_ECC_tjv55.pdf",
+              "contextLabel": ".",
               "tags": [
                 "Cybersecurity"
               ],
-              "searchText": "CYB402 HW7 ECC tjv55 ECC ECC\\CYB402_HW7_ECC_tjv55.pdf Cybersecurity",
-              "secondaryLinks": [
-                {
-                  "label": "Download DOCX",
-                  "href": "./files/fall-2025/cyb402/ECC/CYB402_HW7_ECC_tjv55.docx"
-                }
-              ]
+              "searchText": "CYB402 HW7 ECC tjv55 . CYB402_HW7_ECC_tjv55.pdf Cybersecurity",
+              "secondaryLinks": []
             }
           ],
-          "projects": []
+          "projects": [
+            {
+              "id": "03336bc066",
+              "title": "CYB402",
+              "relPath": ".",
+              "summary": "Python crypto exercises and supporting scripts from CYB402.",
+              "githubUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU/Fall2025/CYB402",
+              "githubLabel": "Open GitHub",
+              "stack": [
+                "Python"
+              ],
+              "languages": [
+                "PY (3)"
+              ],
+              "searchText": "CYB402 .  Python PY (3)"
+            }
+          ]
         },
         {
           "key": "cyb404",
@@ -673,19 +659,19 @@
           ],
           "projects": [
             {
-              "id": "1d167cae5a",
-              "title": "Assignment11",
-              "relPath": "Assignment11",
-              "summary": "Code project discovered in the coursework tree.",
-              "githubUrl": null,
-              "githubLabel": "GitHub link pending",
+              "id": "eb9d2d2e52",
+              "title": "CYB404",
+              "relPath": ".",
+              "summary": "Security lab scripts for scanning, brute-force, ciphers, and remote access experiments from CYB404.",
+              "githubUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU/Fall2025/CYB404",
+              "githubLabel": "Open GitHub",
               "stack": [
                 "Python"
               ],
               "languages": [
-                "PY (3)"
+                "PY (8)"
               ],
-              "searchText": "Assignment11 Assignment11  Python PY (3)"
+              "searchText": "CYB404 .  Python PY (8)"
             }
           ]
         },
@@ -718,116 +704,6 @@
             }
           ],
           "projects": []
-        }
-      ]
-    },
-    {
-      "key": "summer-2025",
-      "label": "Summer 2025",
-      "season": "summer",
-      "year": 2025,
-      "courses": [
-        {
-          "key": "cs312",
-          "label": "cs312",
-          "domain": "computing",
-          "domainLabel": "Computing and software",
-          "semesterKey": "summer-2025",
-          "semesterLabel": "Summer 2025",
-          "searchText": "cs312 Summer 2025 Computing and software",
-          "items": [
-            {
-              "id": "1c99100e37",
-              "title": "phase1pic1",
-              "kind": "visual",
-              "kindLabel": "Visual",
-              "family": "visual",
-              "format": "png",
-              "formatLabel": "PNG",
-              "href": "./files/summer-2025/cs312/edms/projectfiles/edmspic/phase1pic1.png",
-              "primaryLinkLabel": "Open image",
-              "sourceRelativePath": "edms / projectfiles / edmspic / phase1pic1.png",
-              "contextLabel": "edms / projectfiles / edmspic",
-              "tags": [
-                "Computing and software"
-              ],
-              "searchText": "phase1pic1 edms / projectfiles / edmspic edms\\projectfiles\\edmspic\\phase1pic1.png Computing and software"
-            },
-            {
-              "id": "ad671f8f83",
-              "title": "phase1pic2",
-              "kind": "visual",
-              "kindLabel": "Visual",
-              "family": "visual",
-              "format": "png",
-              "formatLabel": "PNG",
-              "href": "./files/summer-2025/cs312/edms/projectfiles/edmspic/phase1pic2.png",
-              "primaryLinkLabel": "Open image",
-              "sourceRelativePath": "edms / projectfiles / edmspic / phase1pic2.png",
-              "contextLabel": "edms / projectfiles / edmspic",
-              "tags": [
-                "Computing and software"
-              ],
-              "searchText": "phase1pic2 edms / projectfiles / edmspic edms\\projectfiles\\edmspic\\phase1pic2.png Computing and software"
-            },
-            {
-              "id": "914749e203",
-              "title": "phase1pic3",
-              "kind": "visual",
-              "kindLabel": "Visual",
-              "family": "visual",
-              "format": "png",
-              "formatLabel": "PNG",
-              "href": "./files/summer-2025/cs312/edms/projectfiles/edmspic/phase1pic3.png",
-              "primaryLinkLabel": "Open image",
-              "sourceRelativePath": "edms / projectfiles / edmspic / phase1pic3.png",
-              "contextLabel": "edms / projectfiles / edmspic",
-              "tags": [
-                "Computing and software"
-              ],
-              "searchText": "phase1pic3 edms / projectfiles / edmspic edms\\projectfiles\\edmspic\\phase1pic3.png Computing and software"
-            },
-            {
-              "id": "da7ae6a5f5",
-              "title": "phase1pic4",
-              "kind": "visual",
-              "kindLabel": "Visual",
-              "family": "visual",
-              "format": "png",
-              "formatLabel": "PNG",
-              "href": "./files/summer-2025/cs312/edms/projectfiles/edmspic/phase1pic4.png",
-              "primaryLinkLabel": "Open image",
-              "sourceRelativePath": "edms / projectfiles / edmspic / phase1pic4.png",
-              "contextLabel": "edms / projectfiles / edmspic",
-              "tags": [
-                "Computing and software"
-              ],
-              "searchText": "phase1pic4 edms / projectfiles / edmspic edms\\projectfiles\\edmspic\\phase1pic4.png Computing and software"
-            }
-          ],
-          "projects": [
-            {
-              "id": "79f7921ff6",
-              "title": "edms",
-              "relPath": "edms",
-              "summary": "------------------ # ================== # Employee Database Management System (EDMS) ### ------------------ # ================== # A full-stack web application that allows administrators to manage employee records and roles, and provides a personalized dashboa",
-              "githubUrl": "https://github.com/tjv55/Project_Group_tjv55_edms",
-              "githubLabel": "Open GitHub",
-              "stack": [
-                "Node.js",
-                "SQL",
-                "HTML",
-                "CSS"
-              ],
-              "languages": [
-                "JS (16)",
-                "CSS (2)",
-                "HTML (1)",
-                "SQL (1)"
-              ],
-              "searchText": "edms edms ------------------ # ================== # Employee Database Management System (EDMS) ### ------------------ # ================== # A full-stack web application that allows administrators to manage employee records and roles, and provides a personalized dashboa Node.js SQL HTML CSS JS (16) CSS (2) HTML (1) SQL (1)"
-            }
-          ]
         }
       ]
     },
@@ -971,16 +847,16 @@
               "id": "db25a5c62a",
               "title": "CYB126",
               "relPath": ".",
-              "summary": "Code project discovered in the coursework tree.",
-              "githubUrl": null,
-              "githubLabel": "GitHub link pending",
+              "summary": "Introductory C programming assignments and problem-solving exercises from CYB126.",
+              "githubUrl": "https://github.com/tjvmooren/NAU/tree/main/NAU/NAU/fall2024/CYB126",
+              "githubLabel": "Open GitHub",
               "stack": [
                 "C"
               ],
               "languages": [
-                "C (12)"
+                "C (11)"
               ],
-              "searchText": "CYB126 .  C C (12)"
+              "searchText": "CYB126 .  C C (11)"
             }
           ]
         },
