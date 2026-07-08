@@ -67,7 +67,7 @@
   const CHAMPIONS = [
     // Champion List
     { season: 2025, champion: "Chandler", runnerUp: "Will", note: "Dominate Win in Finals" },
-    { season: 2024, champion: "Tyler Vander Mooren", runnerUp: "", note: "Dominant playoffs" },
+    { season: 2024, champion: "Tyler V.", runnerUp: "", note: "Dominant playoffs" },
   ];
 
   function renderChampions() {
