@@ -79,7 +79,32 @@
             The API is offline right now, so hub-aware status may be stale.
           </p>
 
-          <div id="twitch-slot"></div>
+          <article class="stream-card">
+            <div class="thumb-wrap">
+              <iframe
+                class="player"
+                src="https://player.twitch.tv/?channel=simonizeshow&parent=vmoor.com&parent=www.vmoor.com&parent=localhost&parent=127.0.0.1"
+                allowfullscreen
+                scrolling="no"
+              ></iframe>
+            </div>
+
+            <div class="stream-top">
+              <div class="stream-title">Main Stream</div>
+              <span class="badge">Twitch</span>
+            </div>
+
+            <div class="stream-meta">
+              <span>@simonizeshow</span>
+              <span>Status: embedded</span>
+            </div>
+
+            <div class="stream-actions">
+              <a class="mini-btn" href="https://twitch.tv/simonizeshow" target="_blank" rel="noopener noreferrer">
+                Open on Twitch
+              </a>
+            </div>
+          </article>
         </article>
       </div>
     </section>
@@ -89,6 +114,5 @@
 
   <script src="../assets/js/site-shell.js" defer></script>
   <script src="../assets/js/health-hub.js" defer></script>
-  <script src="../assets/js/streams.js" defer></script>
 </body>
 </html>
