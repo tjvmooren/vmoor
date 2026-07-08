@@ -425,6 +425,28 @@ async function readDirectorySafe(targetPath) {
   }
 }
 
+async function readRequiredDirectory(targetPath, label) {
+  try {
+    const entries = await fs.readdir(targetPath, { withFileTypes: true });
+
+    if (!entries.some((entry) => entry.isDirectory())) {
+      throw new Error(`${label} has no subdirectories: ${targetPath}`);
+    }
+
+    return entries;
+  } catch (error) {
+    if (error?.code === "ENOENT") {
+      throw new Error(`${label} not found: ${targetPath}`);
+    }
+
+    if (error instanceof Error && error.message) {
+      throw error;
+    }
+
+    throw new Error(`${label} is not readable: ${targetPath}`);
+  }
+}
+
 async function collectFiles(directoryPath, relativePrefix = "") {
   const results = [];
   const entries = await readDirectorySafe(directoryPath);
@@ -798,12 +820,13 @@ async function buildCourseItems(semesterKey, courseKey, courseAbsolutePath, doma
 }
 
 async function buildManifest() {
+  const semesterEntries = await readRequiredDirectory(sourceRoot, "Coursework source root");
+
   await ensureDirectory(path.dirname(manifestPath));
   await fs.rm(outputRoot, { recursive: true, force: true });
   await ensureDirectory(outputRoot);
 
   const projectLinks = await loadProjectLinks();
-  const semesterEntries = await readDirectorySafe(sourceRoot);
   const semesters = [];
   const stats = {
     semesterCount: 0,
