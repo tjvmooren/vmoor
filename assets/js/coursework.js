@@ -170,37 +170,31 @@
       <article class="stat-card">
         <div class="eyebrow">Semesters</div>
         <strong>${stats.semesterCount}</strong>
-        <p>Academic terms currently represented in the archive.</p>
+        <p>Academic terms represented in the archive right now.</p>
       </article>
 
       <article class="stat-card">
         <div class="eyebrow">Courses</div>
         <strong>${stats.courseCount}</strong>
-        <p>Course pages carrying public documents, visuals, or linked code projects.</p>
+        <p>Course pages carrying public documents, visuals, and linked code work.</p>
       </article>
 
       <article class="stat-card">
-        <div class="eyebrow">Published Items</div>
+        <div class="eyebrow">Archive Items</div>
         <strong>${stats.itemCount}</strong>
-        <p>Documents and media copied into the site for direct public access.</p>
+        <p>Reports, papers, screenshots, slides, and other hosted archive entries.</p>
       </article>
 
       <article class="stat-card">
         <div class="eyebrow">Code Projects</div>
         <strong>${stats.projectCount}</strong>
-        <p>Code collections cataloged separately so they can link out to GitHub.</p>
+        <p>Project entries that branch from the archive into public code repositories.</p>
       </article>
 
       <article class="stat-card">
-        <div class="eyebrow">Published Files</div>
+        <div class="eyebrow">Hosted Files</div>
         <strong>${stats.publishedFileCount}</strong>
-        <p>Safe files copied from the raw coursework tree into the deployed site.</p>
-      </article>
-
-      <article class="stat-card">
-        <div class="eyebrow">Excluded</div>
-        <strong>${stats.excludedFileCount}</strong>
-        <p>Instructor materials, secrets, bulk lab noise, and other non-public artifacts filtered out.</p>
+        <p>Files available directly from the site so the archive reads cleanly after deployment.</p>
       </article>
     `;
   }
@@ -499,7 +493,7 @@
 
     setBadge(
       els.buildBadge,
-      `${manifest.stats.publishedFileCount} files copied | ${manifest.stats.excludedFileCount} excluded`,
+      `${manifest.stats.publishedFileCount} hosted files | manifest live`,
       "good"
     );
   }

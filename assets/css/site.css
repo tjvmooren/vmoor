@@ -676,17 +676,24 @@ td.num {
   align-items: start;
 }
 
+.archive-browser-shell {
+  gap: 1.2rem;
+}
+
 .archive-results {
   min-width: 0;
 }
 
 .archive-toolbar {
-  position: sticky;
-  top: 6.2rem;
-  z-index: 12;
-  align-self: start;
-  max-height: calc(100vh - 7.2rem);
-  overflow: auto;
+  gap: 1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid rgba(145, 193, 255, 0.12);
+}
+
+.archive-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .archive-semester {
@@ -1037,9 +1044,8 @@ td.num {
     margin-left: 0;
   }
 
-  .archive-toolbar {
-    position: static;
-    max-height: none;
+  .archive-filter-grid {
+    grid-template-columns: 1fr;
   }
 }
 
