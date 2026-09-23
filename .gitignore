@@ -1,0 +1,6 @@
+# Private league conversation exports and local extraction tools.
+league-chat-export/
+.chat-export-tools/
+
+# Local iPhone backup used for the league-chat import.
+00008030-001430820A31802E/
