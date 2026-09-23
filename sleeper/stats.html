@@ -1,149 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Live Standings | The League Weekly</title>
-  <meta name="description" content="Live league standings, weekly matchups, playoffs, and the Hall of Champions." />
-  <link rel="stylesheet" href="./league.css?v=20260922-2" />
-  <link rel="stylesheet" href="./stats.css?v=20260922-2" />
-</head>
-<body data-page="sleeper" data-root="..">
-  <div data-site-header></div>
-
-  <main class="newspaper stats-page">
-    <header class="masthead">
-      <div class="masthead-top"><span>The sports desk</span><span>Numbers don't take sides.</span></div>
-      <h1>The League Weekly</h1>
-      <div class="masthead-motto"><span></span><p>The league, by the numbers</p><span></span></div>
-    </header>
-    <nav class="edition-nav" aria-label="Newspaper sections"><div><a href="./index.html">← Back to the paper</a><a href="./stats.html" class="selected" aria-current="page">Live standings</a><a href="./index.html#archive">Past editions</a></div><a id="openSleeper" href="https://sleeper.com/leagues/1389360441091686400" target="_blank" rel="noopener">Open in Sleeper ↗</a></nav>
-    <section class="stats-heading">
-      <div><div class="section-kicker">The live sports desk</div><h2 id="leagueName">The League</h2><p id="leagueMeta">Loading league information.</p></div>
-      <div class="actions"><button class="btn" id="tabDashboard" type="button" aria-pressed="true">Standings &amp; matchups</button><button class="btn" id="tabChampions" type="button" aria-pressed="false">Hall of Champions</button><button class="btn" id="refreshBtn" type="button">Refresh data ↻</button></div>
-    </section>
-
-    <section class="section">
-      <div class="wrap">
-        <section id="viewDashboard">
-          <div class="card" id="statusCard">
-            <div class="loading" id="loadingRow">
-              <div class="dot"></div>
-              <div class="muted">Pulling league and roster data from Sleeper.</div>
-            </div>
-
-            <div class="error" id="errorRow" style="display: none;"></div>
-
-            <div id="content" style="display: none;">
-              <div class="row" style="justify-content: space-between;">
-                <div class="stack">
-                  <div class="muted small">Standings</div>
-                  <div class="small muted" id="standingsNote"></div>
-                </div>
-                <div class="pill mono" id="lastUpdated"></div>
-              </div>
-
-              <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable league table"><table id="standingsTable" aria-label="League standings">
-                <thead>
-                  <tr>
-                    <th style="width: 60px;">Rank</th>
-                    <th>Team</th>
-                    <th class="num" style="width: 90px;">W-L-T</th>
-                    <th class="num" style="width: 90px;">PF</th>
-                    <th class="num" style="width: 90px;">PA</th>
-                    <th class="num" style="width: 90px;">Diff</th>
-                  </tr>
-                </thead>
-                <tbody id="standingsBody"></tbody>
-              </table></div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top: 1rem;">
-            <div class="row" style="justify-content: space-between; align-items: center;">
-              <div class="stack">
-                <div class="muted small">Matchups</div>
-                <div class="small muted" id="matchupsNote">Select a week to view matchups.</div>
-              </div>
-
-              <div class="row">
-                <label class="pill mono" for="weekSelect">week</label>
-                <select id="weekSelect" class="select"></select>
-                <button class="btn btn-secondary" id="loadWeekBtn" type="button">Load</button>
-              </div>
-            </div>
-
-            <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable league table"><table id="matchupsTable" aria-label="Weekly matchups" style="margin-top: 0.9rem;">
-              <thead>
-                <tr>
-                  <th style="width: 90px;">Matchup</th>
-                  <th>Team A</th>
-                  <th class="num" style="width: 90px;">Pts</th>
-                  <th>Team B</th>
-                  <th class="num" style="width: 90px;">Pts</th>
-                </tr>
-              </thead>
-              <tbody id="matchupsBody"></tbody>
-            </table></div>
-          </div>
-
-          <div class="card" style="margin-top: 1rem;">
-            <div class="row" style="justify-content: space-between; align-items: center;">
-              <div class="stack">
-                <div class="muted small">Playoffs</div>
-                <div class="small muted" id="playoffsNote">Loading bracket.</div>
-              </div>
-
-              <div class="row">
-                <button class="btn btn-secondary" id="btnWinners" type="button">Winners</button>
-                <button class="btn btn-secondary" id="btnLosers" type="button">Losers</button>
-              </div>
-            </div>
-
-            <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable league table"><table id="playoffsTable" aria-label="Playoff bracket" style="margin-top: 0.9rem;">
-              <thead>
-                <tr>
-                  <th style="width: 90px;">Round</th>
-                  <th style="width: 90px;">Game</th>
-                  <th>Team A</th>
-                  <th>Team B</th>
-                  <th style="width: 120px;">Winner</th>
-                </tr>
-              </thead>
-              <tbody id="playoffsBody"></tbody>
-            </table></div>
-          </div>
-        </section>
-
-        <section id="viewChampions" style="display: none;">
-          <div class="card" style="margin-top: 1rem;">
-            <div class="row" style="justify-content: space-between; align-items: center;">
-              <div class="stack">
-                <div class="muted small">Hall of Champions</div>
-                <div class="small muted">League champions by season.</div>
-              </div>
-              <div class="pill mono" id="championsMeta"></div>
-            </div>
-
-            <div id="championsGrid" class="champions-grid" style="margin-top: 1rem;"></div>
-          </div>
-        </section>
-      </div>
-    </section>
-    <footer class="paper-footer"><div class="footer-masthead">The League Weekly</div><p>One league. One standard. Zero quiet weeks.</p></footer>
-  </main>
-
-  <div data-site-footer></div>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=../theleague/stats.html">
+  <title>The League has moved</title>
   <script>
-    window.VMOOR = {
-      leagueId: "1389360441091686400",
-      season: 2026,
-      leagueType: "redraft"
-    };
+    const destination = new URL('../theleague/stats.html', location.href);
+    destination.search = location.search;
+    if (location.hash) destination.hash = location.hash;
+    location.replace(destination.href);
   </script>
-
-  <script src="../assets/js/site-shell.js?v=20260922-league" defer></script>
-  <script src="./sleeper.js" defer></script>
-</body>
+</head>
+<body><p>The League has moved. <a href="../theleague/stats.html">Continue to The League.</a></p></body>
 </html>

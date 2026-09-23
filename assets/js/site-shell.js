@@ -9,7 +9,7 @@
   const navItems = [
     { key: "home", href: rel("index.html"), label: "Overview" },
     { key: "labs", href: rel("labs/index.html"), label: "Cyber Labs" },
-    { key: "sleeper", href: rel("sleeper/index.html"), label: "The League" },
+    { key: "theleague", href: rel("theleague/"), label: "The League" },
     {
       key: "github",
       href: "https://github.com/tjvmooren?tab=repositories",
@@ -65,7 +65,7 @@
 
         <div class="footer-links">
           <a href="${rel("labs/index.html")}">Labs</a>
-          <a href="${rel("sleeper/index.html")}">The League</a>
+          <a href="${rel("theleague/")}">The League</a>
           <a href="https://github.com/tjvmooren?tab=repositories" target="_blank" rel="noopener">GitHub</a>
         </div>
 

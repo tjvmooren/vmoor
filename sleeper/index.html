@@ -1,76 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#eee8d9">
-  <title>The League Weekly | A Paper for the People</title>
-  <meta name="description" content="The League's weekly paper. Matchup receipts, questionable opinions, league news, and absolutely no quiet weeks.">
-  <link rel="stylesheet" href="./league.css?v=20260922-2">
+  <meta http-equiv="refresh" content="0; url=../theleague/">
+  <title>The League has moved</title>
+  <script>
+    const destination = new URL('../theleague/', location.href);
+    destination.search = location.search;
+    if (location.hash) destination.hash = location.hash;
+    location.replace(destination.href);
+  </script>
 </head>
-<body data-page="sleeper" data-root="..">
-  <a class="skip-link" href="#front-page">Skip to the paper</a>
-  <div data-site-header></div>
-  <main class="newspaper" id="front-page">
-    <header class="masthead">
-      <div class="masthead-top"><span>Independent. Occasionally impartial.</span><span>Est. 2026 <span aria-hidden="true">✦</span> The people's paper</span></div>
-      <h1>The League Weekly</h1>
-      <div class="masthead-motto"><span></span><p>A Paper for the People</p><span></span></div>
-      <div class="edition-line"><span>Tuesday, September 22, 2026</span><strong>Season 2026 <span aria-hidden="true">/</span> Week 02</strong><span>Endless bragging rights.</span></div>
-    </header>
-    <nav class="edition-nav" aria-label="Newspaper sections">
-      <div><a class="selected" href="./index.html" aria-current="page">Front page</a><a href="#scoreboard">The scores</a><a href="#league-news">League news</a><a href="./stats.html">Live standings ↗</a><a href="#archive">Past editions</a></div>
-      <button type="button" id="shareEdition" hidden>Share this issue ↗</button>
-    </nav>
-    <p id="shareStatus" role="status" class="share-status" hidden></p>
-    <div class="news-wire"><span class="wire-label">On the record</span><p>Oysters post 134.28 <b>✦</b> Three teams remain unbeaten <b>✦</b> The no-trade doctrine is now public policy</p></div>
-    <div class="front-layout">
-      <article class="lead-story">
-        <div class="section-kicker"><span>Week two, on the record</span><span>01 / The lead</span></div>
-        <h2>THE RECEIPTS<br>BEGIN.</h2>
-        <p class="lead-deck">Preseason confidence meets the scoreboard.<br>Everyone would like a word with the editor.</p>
-        <div class="byline">By <strong>Harry Longstaff</strong> <span>•</span> Week 2 Review</div>
-        <figure class="lead-image"><img src="./images/receipts-engraving.png" width="1536" height="1024" alt="Newspaper engraving of a football buried in receipts on an editor's desk." fetchpriority="high"><figcaption><span>From the sports desk</span> The paper keeps receipts. The scoreboard supplies them.</figcaption></figure>
-        <div class="lead-columns"><p class="drop-cap">Two weeks into the season, every August opinion can now be held against its owner. The undefeated have declared themselves visionaries. The winless have discovered the phrase “long season.” Everyone else is one hamstring away from blaming the schedule.</p><p>The football shares the front page with Palm Springs. Chris's bachelor-party attendance has become a live futures market. Tyler responded to roster trouble by announcing that he simply does not trade. Herbeck says the threat of the mermaid punishment motivated his team.</p><p>And once again the League Weekly archive has proven that forgetting is for amateurs.</p></div>
-        <blockquote class="lead-pull">“Week 2 did not settle the league. It simply gave everyone better evidence for the arguments they were already making.”</blockquote>
-      </article>
-      <aside class="side-column" aria-label="Around the league">
-        <section class="sportsbook"><div class="section-kicker">The League Sportsbook</div><h2>Will Chris<br>make it?</h2><p class="serif-italic">Palm Springs awaits. The market remains unconvinced.</p><dl class="odds"><div><dt>Makes Palm Springs</dt><dd>+1000</dd></div><div><dt>Only one night</dt><dd>EVEN</dd></div><div><dt>“Doghouse” cited again</dt><dd>−900</dd></div><div><dt>Pink shirt appears</dt><dd>OFF BOARD</dd></div></dl><p class="fine-print">From the Week 2 edition. Fictional odds. Very real group-chat scrutiny.</p></section>
-        <section class="side-story"><div class="section-kicker">Trade desk</div><h2>“I don't<br>trade.”</h2><p class="serif-italic">Tyler Scharr declares doctrine.</p><p>Bryton offers help. Tyler announces policy. Old quarterback receipts immediately surface.</p><a class="text-link" href="#trade-doctrine">Read the dispatch ↗</a><div class="rubber-stamp" aria-hidden="true">UNDER REVIEW</div></section>
-        <section class="week-honors"><div class="section-kicker">Flowers, reluctantly</div><h2>Team of the week</h2><div class="honor-score">134.28</div><h3>Rocky Mountain Oysters</h3><p>From 57.06 to the week's highest score. Apparently the mermaid threat has measurable results.</p></section>
-      </aside>
-    </div>
-    <section class="scoreboard" id="scoreboard" aria-labelledby="scores-heading">
-      <div class="section-title"><div><span class="section-number">02</span><h2 id="scores-heading">The final word.</h2></div><span class="section-kicker">Week 2 / Final scores</span></div>
-      <div class="score-strip">
-        <article class="score"><div class="score-caption">The unbeaten march</div><p class="winner"><span>Hit ’n Ruggs</span><strong>126.70</strong></p><p><span>Bakers Dozen</span><strong>100.28</strong></p></article>
-        <article class="score"><div class="score-caption">No bed rest needed</div><p class="winner"><span>Team IR</span><strong>114.26</strong></p><p><span>Nix Sux Dix</span><strong>79.36</strong></p></article>
-        <article class="score"><div class="score-caption">The crisis desk</div><p class="winner"><span>BigHairyAmericanWinning</span><strong>88.38</strong></p><p><span>McConkey Kong Country</span><strong>68.78</strong></p></article>
-        <article class="score"><div class="score-caption">A win is a win</div><p class="winner"><span>The Queefs</span><strong>82.02</strong></p><p><span>Bolt up, until January</span><strong>69.86</strong></p></article>
-        <article class="score"><div class="score-caption">The high-water mark</div><p class="winner"><span>Rocky Mountain Oysters</span><strong>134.28</strong></p><p><span>Pack Attack</span><strong>87.92</strong></p></article>
-        <article class="score"><div class="score-caption">Order is maintained</div><p class="winner"><span>#Brave</span><strong>101.58</strong></p><p><span>The Scharrts</span><strong>79.50</strong></p></article>
-      </div>
-      <div class="score-footnote"><span>The results are final. The arguments are not.</span><a class="text-link" href="./stats.html">Current standings &amp; matchups ↗</a></div>
-    </section>
-    <section class="league-news" id="league-news" aria-labelledby="news-heading">
-      <div class="section-title"><div><span class="section-number">03</span><h2 id="news-heading">Beyond the box score.</h2></div><span class="section-kicker">Dispatches from a very normal league</span></div>
-      <div class="dispatch-grid">
-        <article class="dispatch" id="trade-doctrine"><div class="section-kicker">Trade desk</div><h3>The No-Trade Doctrine</h3><p class="dispatch-deck">An offer was made. A foreign policy was born.</p><p>Bryton sent Tyler a trade. Tyler answered with a sentence so absolute it became policy: “I don't trade.”</p><details><summary>Open the file <span aria-hidden="true">+</span></summary><p>The archive immediately produced August messages showing Tyler confidently defending his quarterback situation. The prosecution rests.</p><p class="article-note">From the Week 2 Review • The League Weekly</p></details></article>
-        <article class="dispatch"><div class="section-kicker">Punishment watch</div><h3>The Mermaid Threat Works</h3><p class="dispatch-deck">Fear-based player development. Early returns: promising.</p><p>Herbeck offered the most important sports-science conclusion of the week: threat of the mermaid outfit motivated his team.</p><blockquote class="dispatch-quote">“Threat of the mermaid outfit motivated my team.”<cite>— Brandon Herbeck</cite></blockquote></article>
-        <article class="dispatch"><div class="section-kicker">Bachelor party desk</div><h3>Palm Springs Takes the Floor</h3><p class="dispatch-deck">Two foursomes. One unresolved diplomatic incident.</p><p>SilverRock is booked. The question is no longer where the league is playing golf. It is whether Chris can obtain diplomatic clearance to attend.</p><details><summary>The briefing <span aria-hidden="true">+</span></summary><dl class="briefing"><div><dt>Course</dt><dd>SilverRock</dd></div><div><dt>Tee times</dt><dd>12:10 / 12:20</dd></div><div><dt>Groups</dt><dd>2 foursomes</dd></div><div><dt>Chris</dt><dd>QUESTIONABLE</dd></div></dl></details></article>
-      </div>
-      <div class="briefs"><div class="briefs-label"><span class="section-kicker">Also on our desk</span><h3>The short version.</h3></div>
-        <details><summary><span class="section-kicker">Media desk</span><span>Mahomes propaganda allegations return</span><b aria-hidden="true">+</b></summary><p>Eric declared that the “Mahomes Chiefs propaganda” was already going strong. Roy agreed. Herbeck escalated. The broadcast booth was soon under informal investigation.</p></details>
-        <details><summary><span class="section-kicker">Commissioner's desk</span><span>Weston administration still boringly functional</span><b aria-hidden="true">+</b></summary><p>The league remains operational, orderly and largely free of administrative problems. The Tennessee Duo continues to regard this stability as suspicious.</p></details>
-        <details><summary><span class="section-kicker">Injury desk</span><span>The entire sport appears questionable</span><b aria-hidden="true">+</b></summary><p>By Sunday, the league had moved beyond individual injuries and begun asking whether every player in football was getting hurt. Tyler's quarterback situation naturally became public property.</p></details>
-      </div>
-    </section>
-    <section class="quote-of-week" aria-labelledby="quote-heading"><span class="section-kicker" id="quote-heading">A grievance, for the record</span><blockquote>“I love scoring more points than<br>half the league and losing.”</blockquote><p>BRYTON JARVIS <span>•</span> BAKERS DOZEN <span>•</span> 100.28 POINTS, ZERO CONSOLATION</p></section>
-    <section class="archive" id="archive" aria-labelledby="archive-heading"><div class="section-title"><div><span class="section-number">04</span><h2 id="archive-heading">The paper remembers.</h2></div><span class="section-kicker">From the print archive</span></div><div class="archive-layout"><div class="archive-intro"><h3>Old news.<br> Fresh ammunition.</h3><p>Predictions, public apologies, and positions that aged terribly. The original editions, preserved in all their glory.</p><p class="serif-italic">No quietly deleting the evidence.</p><button class="print-button" id="printEdition" type="button" hidden>Print this week's edition ↗</button></div><a class="archive-cover" href="./images/edition-founding.png" target="_blank" rel="noopener"><img src="./images/edition-founding.png" alt="Original founding edition: Week 1 Power Rankings Review." loading="lazy" width="1023" height="1537"><span>Founding edition <b aria-hidden="true">↗</b></span><small>The standard is set.</small></a><a class="archive-cover" href="./images/edition-week-1.png" target="_blank" rel="noopener"><img src="./images/edition-week-1.png" alt="Original Week 1 review: Week 1 Chaos Hits the League." loading="lazy" width="864" height="1821"><span>Week 1 review <b aria-hidden="true">↗</b></span><small>Chaos hits the league.</small></a><a class="archive-cover" href="./images/edition-week-2.png" target="_blank" rel="noopener"><img src="./images/edition-week-2.png" alt="Original Week 2 report: No-Shirt Debacle Forces League to Raise the Stakes." loading="lazy" width="864" height="1821"><span>Week 2 report <b aria-hidden="true">↗</b></span><small>The stakes are raised.</small></a></div></section>
-    <footer class="paper-footer"><div class="footer-masthead">The League Weekly</div><p>One league. One standard. Zero quiet weeks.</p><div><span>Sports reporting, satire &amp; institutional memory.</span><a href="./stats.html">The league, by the numbers ↗</a></div></footer>
-  </main>
-  <div data-site-footer></div>
-  <script src="../assets/js/site-shell.js?v=20260922-league" defer></script>
-  <script src="./league.js?v=20260922" defer></script>
-</body>
+<body><p>The League has moved. <a href="../theleague/">Continue to The League.</a></p></body>
 </html>

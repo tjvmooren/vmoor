@@ -1,11 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="refresh" content="0; url=./stats.html#champions" />
-  <title>Redirecting to The League Hall of Champions</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=../theleague/stats.html#champions">
+  <title>The League has moved</title>
+  <script>
+    const destination = new URL('../theleague/stats.html#champions', location.href);
+    destination.search = location.search;
+    if (location.hash) destination.hash = location.hash;
+    location.replace(destination.href);
+  </script>
 </head>
-<body>
-  <p>Redirecting to <a href="./stats.html#champions">the Hall of Champions</a>.</p>
-</body>
+<body><p>The League has moved. <a href="../theleague/stats.html#champions">Continue to The League.</a></p></body>
 </html>

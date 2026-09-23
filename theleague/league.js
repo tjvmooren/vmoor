@@ -9,7 +9,7 @@
   if (share && status) {
     share.hidden = false;
     share.addEventListener('click', async () => {
-      const url = new URL('./index.html', location.href).href;
+      const url = new URL('./', location.href).href;
       try {
         await navigator.clipboard.writeText(url);
         status.textContent = 'Issue link copied. The group chat awaits.';
