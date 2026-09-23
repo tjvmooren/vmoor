@@ -66,7 +66,7 @@
   // Champion (hardcode - Sleeper doesn't store champions)
   const CHAMPIONS = [
     // Champion List
-    { season: 2025, champion: "Chandler", runnerUp: "Will", note: "Dominate Win in Finals" },
+    { season: 2025, champion: "Chandler", runnerUp: "Will", note: "Dominant win in finals" },
     { season: 2024, champion: "Tyler V.", runnerUp: "", note: "Dominant playoffs" },
   ];
 
@@ -84,7 +84,7 @@
 
       card.innerHTML = `
         <div class="champ-year mono">Season ${entry.season}</div>
-        <div class="champ-name">🏆 ${escapeHtml(entry.champion)}</div>
+        <div class="champ-name">${escapeHtml(entry.champion)}</div>
         <div class="champ-sub">Runner-up: ${escapeHtml(entry.runnerUp || "—")}</div>
         ${entry.note ? `<div class="champ-sub">${escapeHtml(entry.note)}</div>` : ""}
         <div class="champ-badges">
@@ -146,6 +146,8 @@
   // If you want: create a CSS class .active { border-color: var(--link); }
   els.tabDashboard?.classList.toggle("active", tab === "dashboard");
   els.tabChampions?.classList.toggle("active", tab === "champions");
+  els.tabDashboard?.setAttribute("aria-pressed", String(tab === "dashboard"));
+  els.tabChampions?.setAttribute("aria-pressed", String(tab === "champions"));
   }
 
   function showView(view) {
@@ -612,7 +614,12 @@
   }
 
   // default view on load
-  showView("dashboard");
+  if (location.hash === "#champions") {
+    renderChampions();
+    showView("champions");
+  } else {
+    showView("dashboard");
+  }
 
   // =========================================================================
   // Go time
